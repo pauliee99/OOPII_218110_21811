@@ -1,19 +1,23 @@
 package OOPII_1stDeliverable;
 
-public class Traveller {
+import java.util.*;
+
+public class Traveller extends City{
 	String name;
 	int age;
 	double currLatLon;
 	int plTravelers;
 	
-	public Traveller(String name, int age, double currLatLon, int plTravelers) {
-		super();
+	//City city = new City(museums, cafes, weather, lat, lon);
+	
+	public Traveller(int museums, int cafes, String weather, double lat, double lon, String name, int age, double currLatLon, int plTravelers) {
+		super(museums, cafes, weather, lat, lon);
 		this.name = name;
 		this.age = age;
 		this.currLatLon = currLatLon;
 		this.plTravelers = plTravelers;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -41,11 +45,37 @@ public class Traveller {
 		this.plTravelers = plTravelers;
 	}
 	
-	public int Similarity() {
-		int similarity = 0;
+	public double Similarity(City city) {
+		int counter = 0;
+				
+		if (city.museums != 0 && museums == 1) {
+			counter++;
+		}
+		if (city.cafes != 0 && cafes == 1) {
+			counter++;
+		}
+		if (city.weather == "rain" && weather == "rain") {
+			counter++;
+		}
+		if (city.weather != "rain" && weather != "rain") {
+			counter++;
+		}
 		
-		return similarity;
+		double percentage = counter*100/3;
+		
+		return percentage;
 		
 	}
+	
+	public String CompareCities() {
+		return name;
+		
+	}
+	
+//	public String equal() {
+//		if (museums == 1) {
+//			
+//		}
+//	}
 	
 }
