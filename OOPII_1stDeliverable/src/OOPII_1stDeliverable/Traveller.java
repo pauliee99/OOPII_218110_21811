@@ -2,7 +2,7 @@ package OOPII_1stDeliverable;
 
 import java.util.*;
 
-public class Traveller extends City{
+public class Traveller extends City{	
 	String name;
 	int age;
 	double currLatLon;
@@ -67,15 +67,16 @@ public class Traveller extends City{
 		
 	}
 	
-	public String CompareCities() {
-		return name;
+	public String CompareCities(ArrayList<City> cities) {
+		
+		return cities;
 		
 	}
 	
-//	public String equal() {
-//		if (museums == 1) {
-//			
-//		}
-//	}
+	public String CompareCities(Boolean weather) {
+		return name;
+		
+	}
+
 	
 }

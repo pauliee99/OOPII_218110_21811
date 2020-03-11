@@ -1,7 +1,13 @@
 package OOPII_1stDeliverable;
 
 import java.util.*;
-import java.util.Scanner;;
+import java.util.Scanner;
+
+/**
+ * This is main class
+ *
+ * @author it218110
+ */
 
 public class Main {
 	public static void main(String args[]) {
