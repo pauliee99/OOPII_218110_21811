@@ -10,8 +10,8 @@ public class Traveller extends City{
 	
 	//City city = new City(museums, cafes, weather, lat, lon);
 	
-	public Traveller(int museums, int cafes, String weather, double lat, double lon, String name, int age, double currLatLon, int plTravelers) {
-		super(museums, cafes, weather, lat, lon);
+	public Traveller(String cityName, int museums, int cafes, String weather, double lat, double lon, String name, int age, double currLatLon, int plTravelers) {
+		super(cityName, museums, cafes, weather, lat, lon);
 		this.name = name;
 		this.age = age;
 		this.currLatLon = currLatLon;
@@ -64,24 +64,38 @@ public class Traveller extends City{
 		double percentage = counter*100/3;
 		
 		return percentage;
-		
 	}
 	
-	public double CompareCities(ArrayList<City> cities) {
-		City maxSimilarity = new City(museums, cafes, weather, lat, lon);
-		double max = Similarity(maxSimilarity);
+	public City CompareCities(ArrayList<City> cities) {
+		City maxCity = new City(cityName, museums, cafes, weather, lat, lon);
+		City tmpCity = new City(cityName, museums, cafes, weather, lat, lon);
+		//double max = Similarity(tmpCity);
+		//int maxSimilarity = 0;
 		
-		for (int i = 1; i < cities.size(); i++) {
-			Similarity(maxSimilarity);
-		}
-		
-		for(City i : cities) {
-			if (Similarity(i) > Similarity(maxSimilarity)) {
-				max = Similarity(i);
+		for (int i = 0; i < cities.size(); i++) {
+			tmpCity.museums = cities.get(i).getMuseums();
+			tmpCity.cafes = cities.get(i).getCafes();
+			tmpCity.weather = cities.get(i).getWeather();
+			tmpCity.lat = cities.get(i).getLat();
+			tmpCity.lon = cities.get(i).getLon();
+			//Similarity(tmpCity);
+			if (Similarity(tmpCity) > Similarity(maxCity)) {
+				maxCity.museums = tmpCity.museums;
+				maxCity.cafes = tmpCity.cafes;
+				maxCity.weather = tmpCity.weather;
+				maxCity.lat = tmpCity.lat;
+				maxCity.lon = tmpCity.lon;
+				//maxCity = tmpCity;
 			}
 		}
-		
-		return max;
+		System.out.println(cities.get(0).getMuseums());
+//		for(City i : cities) {
+//			if (Similarity(i) > Similarity(maxCity)) {
+//				maxCity = Similarity(i);
+//			}
+//		}
+		System.out.println(maxCity.getCityName());
+		return maxCity;
 	}
 	
 	public String CompareCities(Boolean weather) {

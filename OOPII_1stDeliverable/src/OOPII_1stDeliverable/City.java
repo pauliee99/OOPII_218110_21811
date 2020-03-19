@@ -1,16 +1,16 @@
 package OOPII_1stDeliverable;
 
 public class City {
-	//String cityName;
+	String cityName;
 	int museums;
 	int cafes;
 	String weather;
 	double lat;
 	double lon;
 	
-	public City(int museums, int cafes, String weather, double lat, double ion) {
+	public City(String cityName, int museums, int cafes, String weather, double lat, double ion) {
 		super();
-		//this.cityName = cityName;
+		this.cityName = cityName;
 		this.museums = museums;
 		this.cafes = cafes;
 		this.weather = weather;
@@ -18,14 +18,14 @@ public class City {
 		this.lon = lon; //orizontio lottitude
 	}
 	
-	/*
+	
 	public String getCityName() {
 		return cityName;
 	}
 
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
-	}*/
+	}
 
 	public int getMuseums() {
 		return museums;

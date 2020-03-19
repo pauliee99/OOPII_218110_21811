@@ -15,12 +15,17 @@ public class Main {
 		Scanner newsc = new Scanner(System.in);
 		
 		// City(museums, cafes, weather, lat, lot)
-		City athens = new City(40, 100, "rain", 103.321, 334.321);
-		City thesaloniki = new City(50, 300, "clear", 123.321, 534.311);
-		City ioannina = new City(60, 600, "rain", 503.221, 134.921);
+		City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
+		City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
+		City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
 		
 		//Traveller(museums, cafes, weather, lat,  lon, name, age, currLatLon, plTravelers)
-		Traveller traveller = new Traveller(1, 0, "rain", 0, 0, null, 0, 0, 0); // this is traveller
+		Traveller traveller = new Traveller(null, 1, 0, "rain", 0, 0, null, 0, 0, 0); // this is traveller
+		
+		ArrayList <City> cities = new ArrayList<City>();
+		cities.add(thesaloniki);
+		cities.add(athens);
+		cities.add(ioannina);
 		
 		System.out.println("1.Traveller\n2.Buissness\n3.Tourist");
 		String choice = newsc.nextLine();
@@ -62,6 +67,9 @@ public class Main {
 			}
 			
 			System.out.println("the answer of similarity is : " + traveller.Similarity(athens));
+			
+			traveller.CompareCities(cities);
+			
 			break;
 		case "2": 
 			System.out.println("you choose buissness");
