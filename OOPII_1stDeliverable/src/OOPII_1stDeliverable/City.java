@@ -63,7 +63,7 @@ public class City {
 		return lon;
 	}
 
-	public void setLon(String ion) {
+	public void setLon(double ion) {
 		this.lon = lon;
 	}
 	

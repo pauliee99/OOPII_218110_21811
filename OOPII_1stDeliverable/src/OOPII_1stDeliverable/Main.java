@@ -12,7 +12,8 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String args[]) {
 		
-		Scanner newsc = new Scanner(System.in);
+		Scanner string = new Scanner(System.in);
+		Scanner integer = new Scanner(System.in);
 		
 		// City(museums, cafes, weather, lat, lot)
 		City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
@@ -20,7 +21,8 @@ public class Main {
 		City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
 		
 		//Traveller(museums, cafes, weather, lat,  lon, name, age, currLatLon, plTravelers)
-		Traveller traveller = new Traveller(null, 1, 0, "rain", 0, 0, null, 0, 0, 0); // this is traveller
+		String cityName=null; int museums=0, cafes=0; String waether=null; double lat=0.0, lon=0.0; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
+		Traveller traveller = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers); // this is traveller
 		
 		ArrayList <City> cities = new ArrayList<City>();
 		cities.add(thesaloniki);
@@ -28,16 +30,16 @@ public class Main {
 		cities.add(ioannina);
 		
 		System.out.println("1.Traveller\n2.Buissness\n3.Tourist");
-		String choice = newsc.nextLine();
+		String choice = string.nextLine();
 		
 		System.out.println("give name");
-		String name = newsc.nextLine();
+		name = string.nextLine();
 		
 		System.out.println("give age");
-		String age = newsc.nextLine();
+		age = integer.nextInt();
 		
 		System.out.println("give city (city,counrty)");
-		String city = newsc.nextLine();
+		String city = string.nextLine();
 		
 		switch(choice) {
 		case "1": 

@@ -67,24 +67,29 @@ public class Traveller extends City{
 	}
 	
 	public City CompareCities(ArrayList<City> cities) {
-		City maxCity = new City(cityName, museums, cafes, weather, lat, lon);
+		City maxCity = new City(null, 0, 0, null, 0.0, 0.0);
 		City tmpCity = new City(cityName, museums, cafes, weather, lat, lon);
 		//double max = Similarity(tmpCity);
 		//int maxSimilarity = 0;
+		System.out.println(maxCity.museums);
 		
 		for (int i = 0; i < cities.size(); i++) {
-			tmpCity.museums = cities.get(i).getMuseums();
-			tmpCity.cafes = cities.get(i).getCafes();
-			tmpCity.weather = cities.get(i).getWeather();
-			tmpCity.lat = cities.get(i).getLat();
-			tmpCity.lon = cities.get(i).getLon();
-			//Similarity(tmpCity);
+			tmpCity.setCityName(cities.get(i).getCityName());
+			System.out.println(cities.get(i).getCityName());
+			tmpCity.setMuseums(cities.get(i).getMuseums());
+			tmpCity.setCafes(cities.get(i).getCafes());
+			tmpCity.setWeather(cities.get(i).getWeather());
+			tmpCity.setLat(cities.get(i).getLat());
+			tmpCity.setLon(cities.get(i).getLon());
+			System.out.println(Similarity(tmpCity));
+			System.out.println(Similarity(maxCity));
 			if (Similarity(tmpCity) > Similarity(maxCity)) {
-				maxCity.museums = tmpCity.museums;
-				maxCity.cafes = tmpCity.cafes;
-				maxCity.weather = tmpCity.weather;
-				maxCity.lat = tmpCity.lat;
-				maxCity.lon = tmpCity.lon;
+				maxCity.setCityName(tmpCity.cityName);
+				maxCity.setMuseums(tmpCity.museums);
+				maxCity.setCafes(tmpCity.cafes);
+				maxCity.setWeather(tmpCity.weather);
+				maxCity.setLat(tmpCity.lat);
+				maxCity.setLon(tmpCity.lon);
 				//maxCity = tmpCity;
 			}
 		}
