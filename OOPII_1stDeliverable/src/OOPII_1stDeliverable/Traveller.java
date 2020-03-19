@@ -67,10 +67,21 @@ public class Traveller extends City{
 		
 	}
 	
-	public String CompareCities(ArrayList<City> cities) {
+	public double CompareCities(ArrayList<City> cities) {
+		City maxSimilarity = new City(museums, cafes, weather, lat, lon);
+		double max = Similarity(maxSimilarity);
 		
-		return cities;
+		for (int i = 1; i < cities.size(); i++) {
+			Similarity(maxSimilarity);
+		}
 		
+		for(City i : cities) {
+			if (Similarity(i) > Similarity(maxSimilarity)) {
+				max = Similarity(i);
+			}
+		}
+		
+		return max;
 	}
 	
 	public String CompareCities(Boolean weather) {
