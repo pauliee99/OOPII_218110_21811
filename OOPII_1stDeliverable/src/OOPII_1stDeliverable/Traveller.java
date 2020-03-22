@@ -6,7 +6,7 @@ public class Traveller extends City{
 	String name;
 	int age;
 	double currLatLon;
-	int plTravelers;
+	static int plTravelers;
 	
 	//City city = new City(museums, cafes, weather, lat, lon);
 	
@@ -103,9 +103,24 @@ public class Traveller extends City{
 		return maxCity;
 	}
 	
-	public String CompareCities(Boolean weather) {
-		return name;
-		
+	public City CompareCities(Boolean kairos, ArrayList<City> weatherbool) {
+		ArrayList<City> cities = new ArrayList<City>();
+		System.out.println("skata");
+		for (int i = 0; i < weatherbool.size(); i++) {
+			if (kairos == true) {
+				System.out.println("skata1");
+				if (weatherbool.get(i).getWeather().equals("rain")) {
+					cities.add(weatherbool.get(i));
+					System.out.println("skata2");
+				}
+			}else if (kairos == false) {
+				if (!(weatherbool.get(i).getWeather().equals("rain"))) {
+					cities.add(weatherbool.get(i));
+				}
+			}
+		}
+		System.out.println("skata3");
+		return CompareCities(cities);	
 	}
 
 	
