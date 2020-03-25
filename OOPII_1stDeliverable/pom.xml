@@ -11,6 +11,10 @@
         <version>3.8.0</version>
         <configuration>
           <release>11</release>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+            <descriptor>src/assembly/src.xml</descriptor>
+          </descriptorRefs>
         </configuration>
       </plugin>
     </plugins>

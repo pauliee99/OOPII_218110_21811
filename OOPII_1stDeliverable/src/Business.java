@@ -1,5 +1,3 @@
-package OOPII_1stDeliverable;
-
 public class Business extends Traveller{
 	int museums;
 	int cafes;

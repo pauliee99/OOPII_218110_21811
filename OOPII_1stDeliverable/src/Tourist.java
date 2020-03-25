@@ -1,5 +1,3 @@
-package OOPII_1stDeliverable;
-
 public class Tourist extends Traveller{
 
 	public Tourist(int museums, int cafes, String weather, double lat, double lon, String name,
