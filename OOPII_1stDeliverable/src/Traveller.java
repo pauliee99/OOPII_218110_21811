@@ -117,7 +117,6 @@ public class Traveller extends City{
 				}
 			}
 		}
-		System.out.println("skata3");
 		return CompareCities(cities);	
 	}
 

@@ -1,10 +1,14 @@
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.Scanner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import weather.OpenWeatherMap;
+import weather.Weather;
 import wikipedia.MediaWiki;
 
 
@@ -21,16 +25,20 @@ public class Main {
 	* @param country The country initials (i.e. gr, it, de).
 	* @param appid Your API key of the OpenWeatherMap.*/ 
 	 public static void RetrieveData(String city, String country, String appid,ArrayList<City> cities) throws  IOException {
-		 City tmpcity = new City("athens", 40, 100, "rain", 103.321, 334.321);;
+		 City tmpcity = new City("athens", 40, 100, "rain", 103.321, 334.321);
 		 tmpcity.setCityName(city);
+		 
 		 ObjectMapper mapper = new ObjectMapper();
 		 OpenWeatherMap weather_obj = mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+""), OpenWeatherMap.class);
+		 
 		 System.out.println(city+" temperature: " + (weather_obj.getMain()).getTemp());
 		 
 		 System.out.println(city+" lat: " + weather_obj.getCoord().getLat()+" lon: " + weather_obj.getCoord().getLon());
 		 
-		 tmpcity.setLat(weather_obj.getCoord().getLat());
+		 tmpcity.setWeather(weather_obj.getWeather().get(0).getMain());
+		 //weather_obj.getWeather.get(0).getMain
 		 
+		 tmpcity.setLat(weather_obj.getCoord().getLat());
 		 tmpcity.setLon(weather_obj.getCoord().getLon());
 		 
 		 MediaWiki mediaWiki_obj =  mapper.readValue(new URL("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2"),MediaWiki.class);
@@ -42,36 +50,18 @@ public class Main {
 		 tmpcity.setCafes(countOccurences(mediaWiki_obj.getQuery().getPages().get(0).getExtract(),"Cafes"));
 		 
 		 System.out.println(tmpcity.getMuseums());
-		 
 		 System.out.println(tmpcity.getCafes());
+		// System.out.println(obj.getMain());
 		 
 		 cities.add(tmpcity);
 	}
 	
 	// City(museums, cafes, weather, lat, lot)
-	static City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
-	static City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
-	static City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
+//	static City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
+//	static City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
+//	static City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
 	
-	public static void freeTicket(ArrayList<Traveller> travellers, ArrayList<City> cities) {
-		System.out.println("choose city:\n");
-		print_cities(cities);
-		
-		int k = 0;
-		Scanner sc = new Scanner(System.in);
-		String name = sc.nextLine();
-		double tmpSimilarity, maxSimilarity = 0;
-		
-		for (int i=0; i<travellers.size(); i++) {
-			if (travellers.get(i).Similarity(athens) > maxSimilarity) {
-				k = i;
-				maxSimilarity = travellers.get(i).Similarity(athens);
-				System.out.println(maxSimilarity);
-			}
-		}
-		System.out.println(travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName());
-		//search_cities(cities, cityName);
-	}
+	
 	
 	public static void main(String args[]) throws IOException {
 		ArrayList <City> cities = new ArrayList<City>();
@@ -79,7 +69,8 @@ public class Main {
 		Scanner integer = new Scanner(System.in);
 		
 		String appid ="e9e0d5d96bd08a8c6d75d8b02a24b974";
-		RetrieveData("Rome","it",appid,cities);
+		//RetrieveData("rome","it",appid,cities);
+		//create_city(cities);
 		
 //		// City(museums, cafes, weather, lat, lot)
 //		City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
@@ -94,17 +85,18 @@ public class Main {
 		
 		ArrayList<Traveller> travellers = new ArrayList<>();
 		
-		cities.add(thesaloniki);
-		cities.add(athens);
-		cities.add(ioannina);
+//		cities.add(thesaloniki);
+//		cities.add(athens);
+//		cities.add(ioannina);
 		while (true) {
-			System.out.println("1.Simple Traveller\n2.Buissness Traveller\n3.Tourist Traveller\n4.Quit\n5.Print Cities");
+			
+			System.out.println("1.Traveller\n2.Buissness Traveller\n3.Tourist Traveller\n4.Quit\n5.Print Cities\n6.Create City");
 			String choice = string.nextLine();
 		
 			switch(choice) {
 			case "1":  //simple traveller
 				
-				System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller");
+				System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller \n5) free ticket \n6) back");
 				int tmpchoice = integer.nextInt();
 				int run =0;
 
@@ -157,11 +149,13 @@ public class Main {
 					break;
 				case 2://similarity
 					Traveller taksidiotisSim = search_travellers(travellers, name);
-					System.out.println("choose city ");
+					System.out.println("choose city: ");
 					int k=0;
 					print_cities(cities);
-					
-					String city = cities.get(k).getCityName();
+					System.out.println("choose the city you want based on the number");
+					int temp = integer.nextInt();
+					k = temp;
+					String city = cities.get(k-1).getCityName();
 					
 					
 					City poliSim = search_cities(cities, city);
@@ -173,10 +167,14 @@ public class Main {
 					break;
 				case 3://Compare cities
 					Scanner bool = new Scanner (System.in);
-					boolean tmp = bool.nextBoolean();
-					Traveller taksidiotisCmp = search_travellers(travellers, name);
-					System.out.printf("do you give a shit about weather?", tmp);
+					boolean tmp = false;
+					String name2 = null;
+					print_travellers(travellers);
+					name2 = string.nextLine();
 					
+					Traveller taksidiotisCmp = search_travellers(travellers, name);
+					System.out.printf("do you care about rain? yes/no");
+					tmp = bool.nextBoolean();
 					taksidiotisCmp.CompareCities(tmp, cities);
 					break;
 				case 4://print traveller
@@ -191,50 +189,125 @@ public class Main {
 				}
 
 				break;
-			case "2": 
-				System.out.println("you choose business");
+			case "2": /////////////business
+				System.out.println("you chose business");
 				
-				System.out.println(business.Similarity(athens));
+				System.out.println("choose city: ");
+				int k=0;
+				print_cities(cities);
+				System.out.println("choose the city you want based on the number");
+				int temp = integer.nextInt();
+				k = temp;
+				String city = cities.get(k-1).getCityName();
+				City poliSim = search_cities(cities, city);
+				
+				System.out.println("buisines similartty : " + business.Similarity(poliSim));
 				break;
-			case "3": 
-				System.out.println("you choose tourist");
+			case "3": /////////////tourist
+				System.out.println("you chose tourist");
+
+				System.out.println("choose city: ");
+					int j=0;
+					print_cities(cities);
+				System.out.println("choose the city you want based on the number");
+				int temp2 = integer.nextInt();
+				j = temp2;
+				String city2 = cities.get(j-1).getCityName();
+				City poliSim2 = search_cities(cities, city2);
+				System.out.println("tourist similarity: " + tourist.Similarity(poliSim2));
 				
-				System.out.println(tourist.Similarity(athens));
 				break;
 			case "4":
 				System.exit(0);
 				break;
 			case "5":
 				print_cities(cities);
+				break;
+			case "6":
+				create_city(cities);
+				break;
 			default: 
 				System.out.println("wrong choice");
 			}//end go case
 		}//end of while
 		
 	}//end of main
+	
+	
+	
+	
+	
+	
+	
+	public static void freeTicket(ArrayList<Traveller> travellers, ArrayList<City> cities) {
+		System.out.println("choose city:\n");
+		print_cities(cities);
+		
+		int k = 0;
+		Scanner sc = new Scanner(System.in);
+		String name = sc.nextLine();
+		City tmp;
+		double tmpSimilarity, maxSimilarity = 0;
+		tmp = search_cities(cities, name);
+		
+		for (int i=0; i<travellers.size(); i++) {
+			if (travellers.get(i).Similarity(tmp) > maxSimilarity) {
+				k = i;
+				maxSimilarity = travellers.get(i).Similarity(tmp);
+				System.out.println(maxSimilarity);
+			}
+		}
+		System.out.println(travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName());
+		//search_cities(cities, cityName);
+	}
+	
+	
+	
+	
+	
+	
 
 	public static void print_cities(ArrayList<City> cities) {
 		for (int i=0; i<cities.size(); i++) {
-			System.out.println(cities.get(i).getCityName() + cities.get(i).getMuseums() 
-					+ cities.get(i).getCafes() + cities.get(i).getWeather() + cities.get(i).getLat() 
-					+ cities.get(i).getLon());
+			System.out.println("name: " + cities.get(i).getCityName() + "\tmuseums:" + cities.get(i).getMuseums() + 
+					"\tcafes: " + cities.get(i).getCafes() + "\tweather: " + cities.get(i).getWeather() + "\tLatitude: " +
+					cities.get(i).getLat() +"\tLonitude " + cities.get(i).getLon());
 		}
 	}
 	
+	
+	
+	
+	
+	public static void print_travellers(ArrayList<Traveller> travellers) {
+		for (int i=0; i<travellers.size(); i++) {
+			System.out.println("name: " + travellers.get(i).getName() + "\tage:" + travellers.get(i).getAge());
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
 	public static City search_cities(ArrayList<City> cities, String cityName) {
 		City tmp = null;
-		System.out.println(cityName);
 		for (int i=0; i<cities.size(); i++) {
-			System.out.println(cities.get(i).getCityName());
-			if (cities.get(i).getCityName() == cityName) {
-				System.out.println("sf");
-				//tmp.setCityName(cities.get(i).getCityName());
+			if (cities.get(i).getCityName().contentEquals(cityName)) {
 				tmp = cities.get(i);
 			}
 		}
 		
 		return tmp;
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	public static Traveller search_travellers(ArrayList<Traveller> traveller, String name) {
 		Traveller tmp = null;
@@ -251,6 +324,13 @@ public class Main {
 		return tmp;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
 	static int countOccurences(String str, String word)  
 	{ 
 	    // split the string by spaces in a 
@@ -266,6 +346,24 @@ public class Main {
 	    } 
 	  
 	    return count; 
+	}
+	
+	
+	
+	
+	
+	
+	
+	//RetrieveData(String city, String country, String appid,ArrayList<City> cities
+	static void create_city (ArrayList<City> cities) throws IOException {
+		Scanner integer = new Scanner(System.in);
+		Scanner string = new Scanner(System.in);
+		 
+		 System.out.println("give the city you want to visit: ");
+		 String cityname = string.nextLine();
+		 System.out.println("give the initials of the country you want ot create: ");
+		 String ctryname = string.nextLine();
+		 RetrieveData(cityname, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
 	}
 	
 }
