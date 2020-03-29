@@ -89,12 +89,12 @@ public class Main {
 //		cities.add(athens);
 //		cities.add(ioannina);
 		while (true) {
-			
-			System.out.println("1.Traveller\n2.Buissness Traveller\n3.Tourist Traveller\n4.Quit\n5.Print Cities\n6.Create City");
+			System.out.println("note: you must firtst create city and traveller before doing anything else!");
+			System.out.println("1.Create City\n2.Traveller\n3.Buissness Traveller\n4.Tourist Traveller\n5.Print Cities\n6.Quit");
 			String choice = string.nextLine();
 		
 			switch(choice) {
-			case "1":  //simple traveller
+			case "2":  //simple traveller
 				
 				System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller \n5) free ticket \n6) back");
 				int tmpchoice = integer.nextInt();
@@ -171,9 +171,8 @@ public class Main {
 					String name2 = null;
 					print_travellers(travellers);
 					name2 = string.nextLine();
-					
-					Traveller taksidiotisCmp = search_travellers(travellers, name);
-					System.out.printf("do you care about rain? yes/no");
+					Traveller taksidiotisCmp = search_travellers(travellers, name2);
+					System.out.printf("do you care about rain? true/false");
 					tmp = bool.nextBoolean();
 					taksidiotisCmp.CompareCities(tmp, cities);
 					break;
@@ -189,7 +188,7 @@ public class Main {
 				}
 
 				break;
-			case "2": /////////////business
+			case "3": /////////////business
 				System.out.println("you chose business");
 				
 				System.out.println("choose city: ");
@@ -203,7 +202,7 @@ public class Main {
 				
 				System.out.println("buisines similartty : " + business.Similarity(poliSim));
 				break;
-			case "3": /////////////tourist
+			case "4": /////////////tourist
 				System.out.println("you chose tourist");
 
 				System.out.println("choose city: ");
@@ -217,13 +216,13 @@ public class Main {
 				System.out.println("tourist similarity: " + tourist.Similarity(poliSim2));
 				
 				break;
-			case "4":
+			case "6":
 				System.exit(0);
 				break;
 			case "5":
 				print_cities(cities);
 				break;
-			case "6":
+			case "1":
 				create_city(cities);
 				break;
 			default: 
