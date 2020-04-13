@@ -60,6 +60,7 @@ public class Main {
 //	static City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
 //	static City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
 //	static City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
+
 	
 	
 	
@@ -76,6 +77,7 @@ public class Main {
 //		City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
 //		City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
 //		City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
+		City canditateCity = new City("", 0, 0, "", 0, 0);
 		
 		//Traveller(museums, cafes, weather, lat,  lon, name, age, currLatLon, plTravelers)
 		String cityName="Rome"; int museums=0, cafes=0; String waether=null; double lat=7138.44789, lon=7138.44789; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
@@ -84,6 +86,7 @@ public class Main {
 		Tourist tourist = new Tourist(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
 		
 		ArrayList<Traveller> travellers = new ArrayList<>();
+		
 		
 //		cities.add(thesaloniki);
 //		cities.add(athens);
@@ -149,20 +152,30 @@ public class Main {
 					break;
 				case 2://similarity
 					Traveller taksidiotisSim = search_travellers(travellers, name);
-					System.out.println("choose city: ");
-					int k=0;
-					print_cities(cities);
-					System.out.println("choose the city you want based on the number");
-					int temp = integer.nextInt();
-					k = temp;
-					String city = cities.get(k-1).getCityName();
-					
-					
-					City poliSim = search_cities(cities, city);
-					
+					System.out.println("wanna choose from a list press 1\nwanna type your own press 2\n");
+					int var = integer.nextInt();
+					switch(var) {
+					case 1:
+						System.out.println("choose city: ");
+						int k=0;
+						print_cities(cities);
+						System.out.println("choose the city you want based on the number");
+						int temp = integer.nextInt();
+						k = temp;
+						String city = cities.get(k-1).getCityName();
+						canditateCity.setCityName(city);
+						break;
+					case 2:
+						System.out.println("give nity name");
+						String cityname = string.nextLine();
+						search_cities(cities, cityname);
+						canditateCity.setCityName(cityname);
+
+					}
+					City poliSim = search_cities(cities, canditateCity.cityName);
 					taksidiotisSim.Similarity(poliSim);
-					
-					System.out.println("the answer of similarity is : " + taksidiotisSim.Similarity(poliSim));
+					System.out.println("the answer of similarity is : " + taksidiotisSim.Similarity(poliSim) + "\n");
+
 					
 					break;
 				case 3://Compare cities
@@ -295,6 +308,13 @@ public class Main {
 		for (int i=0; i<cities.size(); i++) {
 			if (cities.get(i).getCityName().contentEquals(cityName)) {
 				tmp = cities.get(i);
+			}else {
+				try {
+					create_city(cities, cityName);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -360,9 +380,17 @@ public class Main {
 		 
 		 System.out.println("give the city you want to visit: ");
 		 String cityname = string.nextLine();
-		 System.out.println("give the initials of the country you want ot create: ");
+		 System.out.println("give the initials of the country the city is in: \n");
 		 String ctryname = string.nextLine();
 		 RetrieveData(cityname, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
 	}
+	
+	static void create_city (ArrayList<City> cities, String cityName) throws IOException {
+		 Scanner string = new Scanner(System.in);
+		 System.out.println("give the initials of the country the city is in: \n");
+		 String ctryname = string.nextLine();
+		 RetrieveData(cityName, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
+	}
+
 	
 }
