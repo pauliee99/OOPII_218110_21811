@@ -2,7 +2,7 @@
 
 import java.util.*;
 
-public class Traveller extends City{	
+public class Traveller extends City implements Comparable<Traveller>{	
 	String name;
 	int age;
 	double currLatLon;
@@ -118,6 +118,12 @@ public class Traveller extends City{
 			}
 		}
 		return CompareCities(cities);	
+	}
+
+	@Override
+	public int compareTo(Traveller o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	

@@ -43,14 +43,14 @@ public class Main {
 		 
 		 MediaWiki mediaWiki_obj =  mapper.readValue(new URL("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2"),MediaWiki.class);
 		 
-		 System.out.println(city+" Wikipedia article: "+mediaWiki_obj.getQuery().getPages().get(0).getExtract());
+		 //System.out.println(city+" Wikipedia article: "+mediaWiki_obj.getQuery().getPages().get(0).getExtract());
 		 
 		 tmpcity.setMuseums(countOccurences(mediaWiki_obj.getQuery().getPages().get(0).getExtract(),"museums"));
 		 
 		 tmpcity.setCafes(countOccurences(mediaWiki_obj.getQuery().getPages().get(0).getExtract(),"Cafes"));
 		 
-		 System.out.println(tmpcity.getMuseums());
-		 System.out.println(tmpcity.getCafes());
+		 System.out.println("musiums" + tmpcity.getMuseums());
+		 System.out.println("cafes" + tmpcity.getCafes());
 		// System.out.println(obj.getMain());
 		 
 		 cities.add(tmpcity);
@@ -81,7 +81,6 @@ public class Main {
 		
 		//Traveller(museums, cafes, weather, lat,  lon, name, age, currLatLon, plTravelers)
 		String cityName="Rome"; int museums=0, cafes=0; String waether=null; double lat=7138.44789, lon=7138.44789; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
-		Traveller traveller = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers); // this is traveller
 		Business business = new Business(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
 		Tourist tourist = new Tourist(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
 		
@@ -105,6 +104,7 @@ public class Main {
 
 				switch(tmpchoice) {
 				case 1://create traveller
+					Traveller traveller = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers); // this is traveller
 					System.out.println("give name");
 					name = string.nextLine();
 					traveller.setName(name);
@@ -166,7 +166,7 @@ public class Main {
 						canditateCity.setCityName(city);
 						break;
 					case 2:
-						System.out.println("give nity name");
+						System.out.println("give city name");
 						String cityname = string.nextLine();
 						search_cities(cities, cityname);
 						canditateCity.setCityName(cityname);
@@ -190,6 +190,7 @@ public class Main {
 					taksidiotisCmp.CompareCities(tmp, cities);
 					break;
 				case 4://print traveller
+					//print_travellers(travellers);
 					System.out.println("name: " + name + "\nage: " + age + "\ncurrent location: " + currlatlon);
 					break;
 				case 5: //free ticket
@@ -238,6 +239,14 @@ public class Main {
 			case "1":
 				create_city(cities);
 				break;
+			case "7"://sorting travellers
+				Collections.sort(travellers);
+				System.out.println("travellers after sorting : "); 
+		        for (Traveller traveller2: travellers) 
+		        { 
+		            System.out.println(traveller2.getName() + " " + traveller2.getAge()); 
+		        }
+		        break;
 			default: 
 				System.out.println("wrong choice");
 			}//end go case
@@ -304,17 +313,30 @@ public class Main {
 	
 	
 	public static City search_cities(ArrayList<City> cities, String cityName) {
+		Scanner sc = new Scanner(System.in);
 		City tmp = null;
 		for (int i=0; i<cities.size(); i++) {
 			if (cities.get(i).getCityName().contentEquals(cityName)) {
 				tmp = cities.get(i);
 			}else {
-				try {
-					create_city(cities, cityName);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				System.out.println("city not found");
+				System.out.println("1) Do nothing\n2) Create a city");
+				int noumero = sc.nextInt();
+				switch(noumero) {
+				case 1:
+					break;
+				case 2:
+					try {
+						create_city(cities, cityName);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					break;
+				default:
+					System.out.println("wrong option");
 				}
+				
 			}
 		}
 		
@@ -382,8 +404,14 @@ public class Main {
 		 String cityname = string.nextLine();
 		 System.out.println("give the initials of the country the city is in: \n");
 		 String ctryname = string.nextLine();
-		 RetrieveData(cityname, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
+		 if (equals(cities, cityname) == true) {
+			 RetrieveData(cityname, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
+		 }else {
+			 System.out.println("city already exist in database");
+		 }
+
 	}
+	
 	
 	static void create_city (ArrayList<City> cities, String cityName) throws IOException {
 		 Scanner string = new Scanner(System.in);
@@ -392,5 +420,21 @@ public class Main {
 		 RetrieveData(cityName, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
 	}
 
+	
+	
+	
+	
+	
+	public static boolean equals(ArrayList<City> cities, String cityName) {
+		if (search_cities(cities, cityName) == null) {
+			return true;
+		}else {
+			return false;
+		}
+		
+	}
+	
+	// na ftiaksoume afto p dimiourgise sto traveller
+	
 	
 }
