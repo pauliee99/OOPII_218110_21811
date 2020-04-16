@@ -1,15 +1,14 @@
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferStrategy;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URL;
 import java.util.*;
-import java.util.Scanner;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import weather.OpenWeatherMap;
-import weather.Weather;
 import wikipedia.MediaWiki;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 
 /**
@@ -18,7 +17,7 @@ import wikipedia.MediaWiki;
  * @author it218110
  */
 
-public class Main {
+public class Main implements Serializable {
 		
 	/**Retrieves weather information, geotag (lan, lon) and a Wikipedia article for a given city.
 	* @param city The Wikipedia article and OpenWeatherMap city. 
@@ -83,19 +82,31 @@ public class Main {
 		String cityName="Rome"; int museums=0, cafes=0; String waether=null; double lat=7138.44789, lon=7138.44789; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
 		Business business = new Business(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
 		Tourist tourist = new Tourist(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
+		Traveller traveller2 = null;
 		
 		ArrayList<Traveller> travellers = new ArrayList<>();
-		
+		FileInputStream readData = new FileInputStream("travellerslist.ser");
+	    ObjectInputStream readStream = new ObjectInputStream(readData);
+		try{
+			travellers = (ArrayList<Traveller>) readStream.readObject();
+			readStream.close();
+			System.out.println(travellers.toString());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 //		cities.add(thesaloniki);
 //		cities.add(athens);
 //		cities.add(ioannina);
 		while (true) {
 			System.out.println("note: you must firtst create city and traveller before doing anything else!");
-			System.out.println("1.Create City\n2.Traveller\n3.Buissness Traveller\n4.Tourist Traveller\n5.Print Cities\n6.Quit");
+			System.out.println("1.Create City\n2.Traveller\n3.Buissness Traveller\n4.Tourist Traveller\n5.Print Cities\n6.Show travellers\n7.Quit");
 			String choice = string.nextLine();
 		
 			switch(choice) {
+			case "1":
+				create_city(cities);
+				break;
 			case "2":  //simple traveller
 				
 				System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller \n5) free ticket \n6) back");
@@ -146,9 +157,27 @@ public class Main {
 					if (answeather == 1) {
 						traveller.setWeather("rain");
 					}
-						
-					travellers.add(traveller);
 					
+					
+					if(check_travellers(travellers, traveller) == true) {
+						
+						//write to file
+				        try{
+				            FileOutputStream writeData = new FileOutputStream("travellerslist.ser");
+				            ObjectOutputStream writeStream = new ObjectOutputStream(writeData);
+
+				            writeStream.writeObject(travellers);
+				            writeStream.flush();
+				            writeStream.close();
+
+				        }catch (IOException e) {
+				            e.printStackTrace();
+				        }
+				        travellers.add(traveller);
+					}else {
+						System.out.println("this traveller already exists\n");
+					}
+											
 					break;
 				case 2://similarity
 					Traveller taksidiotisSim = search_travellers(travellers, name);
@@ -230,23 +259,20 @@ public class Main {
 				System.out.println("tourist similarity: " + tourist.Similarity(poliSim2));
 				
 				break;
-			case "6":
-				System.exit(0);
-				break;
 			case "5":
 				print_cities(cities);
 				break;
-			case "1":
-				create_city(cities);
-				break;
-			case "7"://sorting travellers
+			case "6"://sorting travellers
 				Collections.sort(travellers);
 				System.out.println("travellers after sorting : "); 
-		        for (Traveller traveller2: travellers) 
+		        for (Traveller traveller3: travellers) 
 		        { 
-		            System.out.println(traveller2.getName() + " " + traveller2.getAge()); 
+		            System.out.println(traveller3.getName() + " " + traveller3.getAge()); 
 		        }
 		        break;
+			case "7":
+				System.exit(0);
+				break;
 			default: 
 				System.out.println("wrong choice");
 			}//end go case
@@ -255,7 +281,8 @@ public class Main {
 	}//end of main
 	
 	
-	
+////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
 	
 	
 	
@@ -434,7 +461,36 @@ public class Main {
 		
 	}
 	
-	// na ftiaksoume afto p dimiourgise sto traveller
 	
+	
+	public static boolean check_travellers(ArrayList<Traveller> travellers, Traveller traveller) {
+		for (int i=0; i<travellers.size(); i++) {
+			if (travellers.get(i).getName().equals(traveller.name) && travellers.get(i).getAge() == traveller.age && travellers.get(i).getMuseums() == traveller.museums && travellers.get(i).getCafes() == traveller.cafes && travellers.get(i).getWeather() == traveller.weather) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+
+	
+
+	
+	
+	@Override
+    public String toString() {
+		Traveller traveller = null;
+        return "Person{" +
+                "Name='" + traveller.getName() + '\'' +
+                ", Age='" + traveller.getAge() + '\'' +
+                ", museums=" + traveller.getMuseums() +
+                ", cafes=" + traveller.getCafes() +
+                ", waether=" + traveller.getWeather() +
+                "}\n";
+    }
+	
+	
+	
+
 	
 }

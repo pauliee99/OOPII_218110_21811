@@ -1,8 +1,14 @@
 
-
 import java.util.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class Traveller extends City implements Comparable<Traveller>{	
+public class Traveller extends City implements Comparable<Traveller> {	
 	String name;
 	int age;
 	double currLatLon;
@@ -123,8 +129,12 @@ public class Traveller extends City implements Comparable<Traveller>{
 	@Override
 	public int compareTo(Traveller o) {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.age - o.age;
 	}
+	
+	
+	
+	
 
 	
 }
