@@ -2,13 +2,24 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.URL;
 import java.util.*;
+
+import javax.swing.JOptionPane;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import weather.OpenWeatherMap;
 import wikipedia.MediaWiki;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.Writer;
 
 
 /**
@@ -18,6 +29,9 @@ import java.io.Serializable;
  */
 
 public class Main implements Serializable {
+	
+	
+	private static final String filepath="C:\\Users\\pavlo\\Desktop\\obj.ser";
 		
 	/**Retrieves weather information, geotag (lan, lon) and a Wikipedia article for a given city.
 	* @param city The Wikipedia article and OpenWeatherMap city. 
@@ -26,6 +40,7 @@ public class Main implements Serializable {
 	 public static void RetrieveData(String city, String country, String appid,ArrayList<City> cities) throws  IOException {
 		 City tmpcity = new City("athens", 40, 100, "rain", 103.321, 334.321);
 		 tmpcity.setCityName(city);
+		 
 		 
 		 ObjectMapper mapper = new ObjectMapper();
 		 OpenWeatherMap weather_obj = mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+""), OpenWeatherMap.class);
@@ -62,12 +77,12 @@ public class Main implements Serializable {
 
 	
 	
-	
 	public static void main(String args[]) throws IOException {
 		ArrayList <City> cities = new ArrayList<City>();
 		Scanner string = new Scanner(System.in);
 		Scanner integer = new Scanner(System.in);
-		
+		File file = new File("filename.txt");
+		String line;
 		String appid ="e9e0d5d96bd08a8c6d75d8b02a24b974";
 		//RetrieveData("rome","it",appid,cities);
 		//create_city(cities);
@@ -82,18 +97,17 @@ public class Main implements Serializable {
 		String cityName="Rome"; int museums=0, cafes=0; String waether=null; double lat=7138.44789, lon=7138.44789; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
 		Business business = new Business(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
 		Tourist tourist = new Tourist(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
-		Traveller traveller2 = null;
+		Traveller traveller2 = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);		
 		
 		ArrayList<Traveller> travellers = new ArrayList<>();
-		FileInputStream readData = new FileInputStream("travellerslist.ser");
-	    ObjectInputStream readStream = new ObjectInputStream(readData);
-		try{
-			travellers = (ArrayList<Traveller>) readStream.readObject();
-			readStream.close();
-			System.out.println(travellers.toString());
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+		//traveller2.read();
+		Main objectIO = new Main();
+		//objectIO.WriteObjectToFile(filepath, traveller2);
+		
+        //Read object from file
+		objectIO.ReadObjectFromFile(filepath, travellers);
+		
+		print_travellers(travellers);
 		
 //		cities.add(thesaloniki);
 //		cities.add(athens);
@@ -116,6 +130,7 @@ public class Main implements Serializable {
 				switch(tmpchoice) {
 				case 1://create traveller
 					Traveller traveller = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers); // this is traveller
+					//traveller=traveller2;
 					System.out.println("give name");
 					name = string.nextLine();
 					traveller.setName(name);
@@ -160,20 +175,8 @@ public class Main implements Serializable {
 					
 					
 					if(check_travellers(travellers, traveller) == true) {
-						
-						//write to file
-				        try{
-				            FileOutputStream writeData = new FileOutputStream("travellerslist.ser");
-				            ObjectOutputStream writeStream = new ObjectOutputStream(writeData);
-
-				            writeStream.writeObject(travellers);
-				            writeStream.flush();
-				            writeStream.close();
-
-				        }catch (IOException e) {
-				            e.printStackTrace();
-				        }
 				        travellers.add(traveller);
+				        objectIO.WriteObjectToFile(filepath, travellers);
 					}else {
 						System.out.println("this traveller already exists\n");
 					}
@@ -474,22 +477,70 @@ public class Main implements Serializable {
 	
 
 	
-
 	
 	
-	@Override
-    public String toString() {
-		Traveller traveller = null;
-        return "Person{" +
-                "Name='" + traveller.getName() + '\'' +
-                ", Age='" + traveller.getAge() + '\'' +
-                ", museums=" + traveller.getMuseums() +
-                ", cafes=" + traveller.getCafes() +
-                ", waether=" + traveller.getWeather() +
-                "}\n";
+    public void WriteObjectToFile(String filepath,ArrayList<Traveller> travellers) {
+    	 
+        try {
+        	int i=0;
+            FileOutputStream fileOut = new FileOutputStream(filepath);
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+            for (Traveller m : travellers) {
+            	objectOut.writeObject(travellers.get(i));
+            	i++;
+            }
+            objectOut.close();
+            System.out.println("The Object  was succesfully written to a file");
+ 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
-	
-	
+ 
+    public void ReadObjectFromFile(String filepath, ArrayList<Traveller> travellers) {
+ 
+        try {
+        	
+        	
+            FileInputStream fileIn = new FileInputStream(filepath);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+ 
+            //Object obj = objectIn.readObject();
+            
+            // create a reader instance
+            BufferedReader br = new BufferedReader(new FileReader(filepath));
+
+            // read until end of file
+            String line;
+            boolean cont = true;
+            //while ((line = br.readLine()) != null) {
+            while(cont) {
+            	//System.out.println(line);
+            	Traveller tmp = new Traveller(null, 0, 0, null, 0, 0, null, 0, 0, 0);
+            	Object obj = objectIn.readObject();
+                //System.out.println(line);
+                tmp = (Traveller) obj;
+                if ( obj != null) {
+                	travellers.add(tmp);
+                }else {
+                	cont =false;
+                }
+                
+            }
+
+            // close the reader
+            br.close();
+            
+            System.out.println("The Object has been read from the file");
+            objectIn.close();
+            //return obj;
+ 
+        } catch (Throwable ex) {
+            
+        	//ex.printStackTrace();
+            //return null;
+        }
+    }
 	
 
 	

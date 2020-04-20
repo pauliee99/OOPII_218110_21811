@@ -1,6 +1,6 @@
+import java.io.Serializable;
 
-
-public class City {
+public class City implements Serializable {
 	String cityName;
 	int museums;
 	int cafes;

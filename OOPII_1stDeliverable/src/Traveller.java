@@ -8,12 +8,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-public class Traveller extends City implements Comparable<Traveller> {	
+public class Traveller extends City implements Comparable<Traveller>, Serializable {	
 	String name;
 	int age;
 	double currLatLon;
 	static int plTravelers;
 	
+	private static final long serialVersionUID = 1L;
 	//City city = new City(museums, cafes, weather, lat, lon);
 	
 	public Traveller(String cityName, int museums, int cafes, String weather, double lat, double lon, String name, int age, double currLatLon, int plTravelers) {
@@ -133,8 +134,46 @@ public class Traveller extends City implements Comparable<Traveller> {
 	}
 	
 	
+	@Override
+    public String toString() {
+        return "Traveller{" +
+                "Name='" + name + '\'' +
+                ", Age='" + age + '\'' +
+                ", museums=" + museums + '\'' +
+                ", cafes=" + cafes + '\'' +
+                ", waether=" + weather +
+                "}\n";
+    }
 	
-	
+//	
+//	public void read() {
+//		try{
+//			FileInputStream readData = new FileInputStream("travellerslist.ser");
+//		    ObjectInputStream readStream = new ObjectInputStream(readData);
+//		    ArrayList travellers = (ArrayList<Traveller>) readStream.readObject();
+//			readStream.close();
+//			System.out.println(travellers.toString());
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	
+//	public void write(ArrayList<Traveller> travellers) {
+//		//write to file
+//        try{
+//            FileOutputStream writeData = new FileOutputStream("travellerslist.ser");
+//            ObjectOutputStream writeStream = new ObjectOutputStream(writeData);
+//
+//            writeStream.writeObject(travellers);
+//            writeStream.flush();
+//            writeStream.close();
+//
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//	}
+//	
 
 	
 }
