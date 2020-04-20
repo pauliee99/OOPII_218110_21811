@@ -493,7 +493,7 @@ public class Main implements Serializable {
             System.out.println("The Object  was succesfully written to a file");
  
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
     }
  
@@ -535,7 +535,7 @@ public class Main implements Serializable {
             objectIn.close();
             //return obj;
  
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             
         	//ex.printStackTrace();
             //return null;
