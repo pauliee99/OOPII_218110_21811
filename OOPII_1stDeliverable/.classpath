@@ -43,5 +43,14 @@
 	<classpathentry kind="lib" path="F:/Documents/university/uni/4o eksamino/java2/ergasia/toukathigiti/OOPII-master/jars/mysql-connector-java-8.0.15.jar"/>
 	<classpathentry kind="lib" path="F:/Documents/university/uni/4o eksamino/java2/ergasia/toukathigiti/OOPII-master/jars/mysql-connector-java-8.0.15-sources.jar"/>
 	<classpathentry kind="lib" path="F:/Documents/university/uni/4o eksamino/java2/ergasia/toukathigiti/OOPII-master/jars/ojdbc6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/ojdbc8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/ons.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/oraclepki.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/orai18n.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/osdt_cert.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/osdt_core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/simplefan.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/ucp.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pavlo/Documents/university/uni/4o eksamino/java2/ojdbc8-full/xdb6.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

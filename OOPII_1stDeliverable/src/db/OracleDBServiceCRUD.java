@@ -44,8 +44,39 @@ public class OracleDBServiceCRUD {
 		}
  
 	}
+	
+	private static void addDataToDB(int newKey, int year, int month, int day) {
+		 
+		try {
+			String insertQueryStatement = "INSERT  INTO  dt_date  VALUES  (?,?,?,?,?,?)";
+			
+			//static Connection db_con_obj = null;
+			//static PreparedStatement db_prep_obj = null;
+			
+			db_prep_obj = db_con_obj.prepareStatement(insertQueryStatement);
+			db_prep_obj.setInt(1, newKey);//.setString
+			db_prep_obj.setInt(2, year);
+			db_prep_obj.setInt(3, month);
+			db_prep_obj.setInt(4, day);
+			db_prep_obj.setInt(5, 1);//.setString
+			db_prep_obj.setInt(6, 15);
+			//db_prep_obj.setInt(7, 1);
+			//db_prep_obj.setInt(8, 1);
+			//db_prep_obj.setObject(9, new Date());
+			
+			// execute insert SQL statement Executes the SQL statement in this PreparedStatement object, which must be an SQL Data Manipulation Language (DML) statement
+			int numRowChanged = db_prep_obj.executeUpdate(); //either (1) the row count for SQL Data Manipulation Language (DML) statements or (2) 0 for SQL statements that return nothing
+			System.out.println("Rows "+numRowChanged+" changed.");
+			
+		} catch (
+ 
+		SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static void ReadData() throws SQLException {
-	db_prep_obj = db_con_obj.prepareStatement("select * from cities");
+	db_prep_obj = db_con_obj.prepareStatement("select * from CITY");
 	ResultSet  rs = db_prep_obj.executeQuery();
 
     while (rs.next()){
@@ -53,7 +84,7 @@ public class OracleDBServiceCRUD {
         int museums = rs.getInt("museums");
         int cafes = rs.getInt("cafes");
         int restaurants = rs.getInt("restaurants");
-        int bars = rs.getInt("bars");
+        //int bars = rs.getInt("bars");
         double lat = rs.getDouble("lat");
         double lon = rs.getFloat("lon");
         String weather = rs.getString("weather");
@@ -65,6 +96,6 @@ public class OracleDBServiceCRUD {
 	
 	public static void main(String [] args) throws SQLException {
 		makeJDBCConnection();
-		//ReadData();
+		ReadData();
 		}
 }
