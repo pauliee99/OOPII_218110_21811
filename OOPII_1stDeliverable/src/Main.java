@@ -40,7 +40,7 @@ import java.io.Writer;
 public class Main implements Serializable {
 	
 	
-	private static final String filepath="C:\\Users\\pavlo\\Desktop\\obj.ser";
+	private static final String filepath="obj.ser";
 		
 	/**Retrieves weather information, geotag (lan, lon) and a Wikipedia article for a given city.
 	* @param city The Wikipedia article and OpenWeatherMap city. 
