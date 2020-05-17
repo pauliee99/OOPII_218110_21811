@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import GUI.BusinessTravellerGui;
 import GUI.CreateCityNameGui;
-import GUI.FormPanel;
 import GUI.MainMenu;
 import GUI.PrintCitiesGui;
 import GUI.ShowTravellersGui;
@@ -34,6 +34,7 @@ import GUI.TravellerGui;
 import weather.OpenWeatherMap;
 import wikipedia.MediaWiki;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -50,6 +51,27 @@ import java.io.FileWriter;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.Writer;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import GUI.BusinessTravellerGui;
+import GUI.CreateCityNameGui;
+import GUI.PrintCitiesGui;
+import GUI.ShowTravellersGui;
+import GUI.TouristTravellerGui;
+import GUI.TravellerGui;
 
 
 /**
@@ -57,12 +79,10 @@ import java.io.Writer;
  *
  * @author it218110
  */
-
-public class Main implements Serializable {
-	
+public class Main extends JFrame implements Serializable {
 	
 	private static final String filepath="obj.ser";
-		
+	private static FormPanel formPanel;
 	
 	
 	// City(museums, cafes, weather, lat, lot)
@@ -70,10 +90,7 @@ public class Main implements Serializable {
 //	static City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
 //	static City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
 
-	
-	
 	public static void main(String args[]) throws IOException, SQLException {
-		
 		ArrayList <City> cities = new ArrayList<City>();
 		Scanner string = new Scanner(System.in);
 		Scanner integer = new Scanner(System.in);
@@ -110,10 +127,20 @@ public class Main implements Serializable {
 		
 		print_travellers(travellers);
 		
-//		cities.add(thesaloniki);
-//		cities.add(athens);
-//		cities.add(ioannina);
-		//new FormPanel();
+		//
+		
+		formPanel.setLayout(new BorderLayout());
+		
+		formPanel = new FormPanel();
+		formPanel.add(formPanel, BorderLayout.WEST);
+		
+		formPanel.setSize(600, 600);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		formPanel.setVisible(true);
+		
+		formPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gc = new GridBagConstraints();
+		
 		while (true) {
 			//new MainMenu();
 			System.out.println("note: you must firtst create city and traveller before doing anything else!");

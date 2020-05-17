@@ -1,30 +1,23 @@
-package GUI;
 
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-//import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
-//import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-//import javax.swing.JList;
 import javax.swing.JPanel;
-//import javax.swing.JTextField;
-//import javax.swing.border.Border;
-
 import GUI.BusinessTravellerGui;
 import GUI.CreateCityNameGui;
 import GUI.PrintCitiesGui;
 import GUI.ShowTravellersGui;
 import GUI.TouristTravellerGui;
 import GUI.TravellerGui;
+
 
 
 
@@ -38,10 +31,7 @@ public class FormPanel extends JPanel implements ActionListener{
 	private JButton printCities;
 	private JButton showTravellers;
 	private JButton quit;
-	private JLabel note;
-	
-	private static String tmp;
-	
+	private JLabel note;	
 	private FormPanel formPanel;
 	
 	public FormPanel() {
@@ -162,15 +152,6 @@ public class FormPanel extends JPanel implements ActionListener{
 			
 		}
 	}
-
-	public static String getTmp() {
-		return tmp;
-	}
-
-	public void setTmp(String tmp) {
-		this.tmp = tmp;
-	}
-	
 	
 	
 

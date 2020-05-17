@@ -1,4 +1,4 @@
-package GUI;
+
 
 
 import java.awt.BorderLayout;
@@ -34,5 +34,10 @@ public class MainMenu extends JFrame{
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
+		
+	
+		
 	}
+
+	
 }
