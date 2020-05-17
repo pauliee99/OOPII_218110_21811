@@ -1,4 +1,4 @@
-package GUI;
+
 
 
 import java.awt.BorderLayout;
@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,6 +14,7 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
+
 
 public class MainMenu extends JFrame{
 
