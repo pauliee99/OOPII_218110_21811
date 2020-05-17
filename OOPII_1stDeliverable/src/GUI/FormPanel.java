@@ -150,7 +150,11 @@ public class FormPanel extends JPanel implements ActionListener{
 			new ShowTravellersGui();
 		}else if (clicked == quit) {
 			
+<<<<<<< 47d93fbe711bb96c5a074d8b1dcd612bd4e8b93e
 		}else {fff
+=======
+		}else {
+>>>>>>> commit gui
 			
 		}
 	}

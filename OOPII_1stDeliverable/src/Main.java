@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,12 +13,32 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import GUI.BusinessTravellerGui;
+import GUI.CreateCityNameGui;
+import GUI.FormPanel;
+import GUI.MainMenu;
+import GUI.PrintCitiesGui;
+import GUI.ShowTravellersGui;
+import GUI.TouristTravellerGui;
+import GUI.TravellerGui;
 import weather.OpenWeatherMap;
 import wikipedia.MediaWiki;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;
@@ -42,6 +63,247 @@ public class Main implements Serializable {
 	
 	private static final String filepath="obj.ser";
 		
+	
+	
+	// City(museums, cafes, weather, lat, lot)
+//	static City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
+//	static City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
+//	static City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
+
+	
+	
+	public static void main(String args[]) throws IOException, SQLException {
+		
+		ArrayList <City> cities = new ArrayList<City>();
+		Scanner string = new Scanner(System.in);
+		Scanner integer = new Scanner(System.in);
+		File file = new File("filename.txt");
+		String line;
+		String appid ="e9e0d5d96bd08a8c6d75d8b02a24b974";
+		//RetrieveData("rome","it",appid,cities);
+		//create_city(cities);
+		
+		makeJDBCConnection();
+		ReadData(cities);
+		
+//		// City(museums, cafes, weather, lat, lot)
+//		City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
+//		City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
+//		City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
+		City canditateCity = new City("", 0, 0, "", 0, 0);
+		
+		
+		
+		//Traveller(museums, cafes, weather, lat,  lon, name, age, currLatLon, plTravelers)
+		String cityName="Rome"; int museums=0, cafes=0; String waether=null; double lat=7138.44789, lon=7138.44789; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
+		Business business = new Business(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
+		Tourist tourist = new Tourist(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
+		Traveller traveller2 = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);		
+		
+		ArrayList<Traveller> travellers = new ArrayList<>();
+		//traveller2.read();
+		Main objectIO = new Main();
+		//objectIO.WriteObjectToFile(filepath, traveller2);
+		
+        //Read object from file
+		objectIO.ReadObjectFromFile(filepath, travellers);
+		
+		print_travellers(travellers);
+		
+//		cities.add(thesaloniki);
+//		cities.add(athens);
+//		cities.add(ioannina);
+		//new FormPanel();
+		while (true) {
+			//new MainMenu();
+			System.out.println("note: you must firtst create city and traveller before doing anything else!");
+			System.out.println("1.Create City\n2.Traveller\n3.Buissness Traveller\n4.Tourist Traveller\n5.Print Cities\n6.Show travellers\n7.Quit");
+			String choice = string.nextLine();
+			
+			//String choice = FormPanel.getTmp();
+			
+			switch(choice) {
+			case "1":
+				create_city(cities);
+				//new MainMenu();
+				break;
+			case "2":  //simple traveller
+				
+				System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller \n5) free ticket \n6) back");
+				int tmpchoice = integer.nextInt();
+				int run =0;
+
+				switch(tmpchoice) {
+				case 1://create traveller
+					Traveller traveller = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers); // this is traveller
+					//traveller=traveller2;
+					System.out.println("give name");
+					name = string.nextLine();
+					traveller.setName(name);
+						
+					System.out.println("give age");
+					age = integer.nextInt();
+					traveller.setAge(age);
+						
+					
+						
+					Scanner ans = new Scanner(System.in);
+					System.out.println("you choose traveller");
+					
+					System.out.println("do you like museums?"); //mousia
+					
+					System.out.println("1.yes/2.no");
+					
+					int ansmus = ans.nextInt();
+					
+					System.out.printf("ansmus:" + ansmus);
+					
+					if (ansmus == 1) {
+						traveller.setMuseums(1);
+						System.out.printf("set musia" + traveller.getMuseums());
+					}
+					
+					
+						
+					System.out.println("do you like cafes?"); //cafes
+					System.out.println("1.yes/2.no");
+					int anscafe = ans.nextInt();
+					if (anscafe == 1) {
+						traveller.setCafes(1);
+					}
+						
+					System.out.println("do you like rain?"); //kairos
+					System.out.println("1.yes/2.no");
+					int answeather = ans.nextInt();
+					if (answeather == 1) {
+						traveller.setWeather("rain");
+					}
+					
+					
+					if(check_travellers(travellers, traveller) == true) {
+				        travellers.add(traveller);
+				        objectIO.WriteObjectToFile(filepath, travellers);
+					}else {
+						System.out.println("this traveller already exists\n");
+					}
+					
+					new MainMenu();
+					break;
+				case 2://similarity
+					Traveller taksidiotisSim = search_travellers(travellers, name);
+					System.out.println("wanna choose from a list press 1\nwanna type your own press 2\n");
+					int var = integer.nextInt();
+					switch(var) {
+					case 1:
+						System.out.println("choose city: ");
+						int k=0;
+						print_cities(cities);
+						System.out.println("choose the city you want based on the number");
+						int temp = integer.nextInt();
+						k = temp;
+						String city = cities.get(k-1).getCityName();
+						canditateCity.setCityName(city);
+						break;
+					case 2:
+						System.out.println("give city name");
+						String cityname = string.nextLine();
+						search_cities(cities, cityname);
+						canditateCity.setCityName(cityname);
+
+					}
+					City poliSim = search_cities(cities, canditateCity.cityName);
+					taksidiotisSim.Similarity(poliSim);
+					System.out.println("the answer of similarity is : " + taksidiotisSim.Similarity(poliSim) + "\n");
+
+					
+					break;
+				case 3://Compare cities
+					Scanner bool = new Scanner (System.in);
+					boolean tmp = false;
+					String name2 = null;
+					print_travellers(travellers);
+					name2 = string.nextLine();
+					Traveller taksidiotisCmp = search_travellers(travellers, name2);
+					System.out.printf("do you care about rain? true/false");
+					tmp = bool.nextBoolean();
+					taksidiotisCmp.CompareCities(tmp, cities);
+					break;
+				case 4://print traveller
+					//print_travellers(travellers);
+					System.out.println("name: " + name + "\nage: " + age + "\ncurrent location: " + currlatlon);
+					break;
+				case 5: //free ticket
+					freeTicket(travellers, cities);
+					break;
+				case 6:
+					run =1;
+					break;
+				}
+
+				break;
+			case "3": /////////////business
+				System.out.println("you chose business");
+				
+				System.out.println("choose city: ");
+				int k=0;
+				print_cities(cities);
+				System.out.println("choose the city you want based on the number");
+				int temp = integer.nextInt();
+				k = temp;
+				String city = cities.get(k-1).getCityName();
+				City poliSim = search_cities(cities, city);
+				
+				System.out.println("buisines similartty : " + business.Similarity(poliSim));
+				new MainMenu();
+				break;
+			case "4": /////////////tourist
+				System.out.println("you chose tourist");
+
+				System.out.println("choose city: ");
+					int j=0;
+					print_cities(cities);
+				System.out.println("choose the city you want based on the number");
+				int temp2 = integer.nextInt();
+				j = temp2;
+				String city2 = cities.get(j-1).getCityName();
+				City poliSim2 = search_cities(cities, city2);
+				System.out.println("tourist similarity: " + tourist.Similarity(poliSim2));
+				new MainMenu();
+				break;
+			case "5":
+				print_cities(cities);
+				break;
+			case "6"://sorting travellers
+				Collections.sort(travellers);
+				System.out.println("travellers after sorting : "); 
+		        for (Traveller traveller3: travellers) 
+		        { 
+		            System.out.println(traveller3.getName() + " " + traveller3.getAge()); 
+		        }
+		        break;
+			case "7":
+				System.exit(0);
+				break;
+			default: 
+				System.out.println("wrong choice");
+			}//end go case
+		}//end of while
+		
+	}//end of main
+	
+	
+////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**Retrieves weather information, geotag (lan, lon) and a Wikipedia article for a given city.
 	* @param city The Wikipedia article and OpenWeatherMap city. 
 	* @param country The country initials (i.e. gr, it, de).
@@ -166,227 +428,26 @@ public class Main implements Serializable {
 		        cities.add(tmpCity);
 		    }
 		}
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	
-	// City(museums, cafes, weather, lat, lot)
-//	static City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
-//	static City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
-//	static City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
-
-	
-	
-	public static void main(String args[]) throws IOException, SQLException {
-		ArrayList <City> cities = new ArrayList<City>();
-		Scanner string = new Scanner(System.in);
-		Scanner integer = new Scanner(System.in);
-		File file = new File("filename.txt");
-		String line;
-		String appid ="e9e0d5d96bd08a8c6d75d8b02a24b974";
-		//RetrieveData("rome","it",appid,cities);
-		//create_city(cities);
-		
-		makeJDBCConnection();
-		ReadData(cities);
-		
-//		// City(museums, cafes, weather, lat, lot)
-//		City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
-//		City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
-//		City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
-		City canditateCity = new City("", 0, 0, "", 0, 0);
-		
-		
-		//Traveller(museums, cafes, weather, lat,  lon, name, age, currLatLon, plTravelers)
-		String cityName="Rome"; int museums=0, cafes=0; String waether=null; double lat=7138.44789, lon=7138.44789; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
-		Business business = new Business(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
-		Tourist tourist = new Tourist(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
-		Traveller traveller2 = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);		
-		
-		ArrayList<Traveller> travellers = new ArrayList<>();
-		//traveller2.read();
-		Main objectIO = new Main();
-		//objectIO.WriteObjectToFile(filepath, traveller2);
-		
-        //Read object from file
-		objectIO.ReadObjectFromFile(filepath, travellers);
-		
-		print_travellers(travellers);
-		
-//		cities.add(thesaloniki);
-//		cities.add(athens);
-//		cities.add(ioannina);
-		while (true) {
-			System.out.println("note: you must firtst create city and traveller before doing anything else!");
-			System.out.println("1.Create City\n2.Traveller\n3.Buissness Traveller\n4.Tourist Traveller\n5.Print Cities\n6.Show travellers\n7.Quit");
-			String choice = string.nextLine();
-		
-			switch(choice) {
-			case "1":
-				create_city(cities);
-				break;
-			case "2":  //simple traveller
-				
-				System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller \n5) free ticket \n6) back");
-				int tmpchoice = integer.nextInt();
-				int run =0;
-
-				switch(tmpchoice) {
-				case 1://create traveller
-					Traveller traveller = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers); // this is traveller
-					//traveller=traveller2;
-					System.out.println("give name");
-					name = string.nextLine();
-					traveller.setName(name);
-						
-					System.out.println("give age");
-					age = integer.nextInt();
-					traveller.setAge(age);
-						
-					
-						
-					Scanner ans = new Scanner(System.in);
-					System.out.println("you choose traveller");
-					
-					System.out.println("do you like museums?"); //mousia
-					
-					System.out.println("1.yes/2.no");
-					
-					int ansmus = ans.nextInt();
-					
-					System.out.printf("ansmus:" + ansmus);
-					
-					if (ansmus == 1) {
-						traveller.setMuseums(1);
-						System.out.printf("set musia" + traveller.getMuseums());
-					}
-					
-					
-						
-					System.out.println("do you like cafes?"); //cafes
-					System.out.println("1.yes/2.no");
-					int anscafe = ans.nextInt();
-					if (anscafe == 1) {
-						traveller.setCafes(1);
-					}
-						
-					System.out.println("do you like rain?"); //kairos
-					System.out.println("1.yes/2.no");
-					int answeather = ans.nextInt();
-					if (answeather == 1) {
-						traveller.setWeather("rain");
-					}
-					
-					
-					if(check_travellers(travellers, traveller) == true) {
-				        travellers.add(traveller);
-				        objectIO.WriteObjectToFile(filepath, travellers);
-					}else {
-						System.out.println("this traveller already exists\n");
-					}
-											
-					break;
-				case 2://similarity
-					Traveller taksidiotisSim = search_travellers(travellers, name);
-					System.out.println("wanna choose from a list press 1\nwanna type your own press 2\n");
-					int var = integer.nextInt();
-					switch(var) {
-					case 1:
-						System.out.println("choose city: ");
-						int k=0;
-						print_cities(cities);
-						System.out.println("choose the city you want based on the number");
-						int temp = integer.nextInt();
-						k = temp;
-						String city = cities.get(k-1).getCityName();
-						canditateCity.setCityName(city);
-						break;
-					case 2:
-						System.out.println("give city name");
-						String cityname = string.nextLine();
-						search_cities(cities, cityname);
-						canditateCity.setCityName(cityname);
-
-					}
-					City poliSim = search_cities(cities, canditateCity.cityName);
-					taksidiotisSim.Similarity(poliSim);
-					System.out.println("the answer of similarity is : " + taksidiotisSim.Similarity(poliSim) + "\n");
-
-					
-					break;
-				case 3://Compare cities
-					Scanner bool = new Scanner (System.in);
-					boolean tmp = false;
-					String name2 = null;
-					print_travellers(travellers);
-					name2 = string.nextLine();
-					Traveller taksidiotisCmp = search_travellers(travellers, name2);
-					System.out.printf("do you care about rain? true/false");
-					tmp = bool.nextBoolean();
-					taksidiotisCmp.CompareCities(tmp, cities);
-					break;
-				case 4://print traveller
-					//print_travellers(travellers);
-					System.out.println("name: " + name + "\nage: " + age + "\ncurrent location: " + currlatlon);
-					break;
-				case 5: //free ticket
-					freeTicket(travellers, cities);
-					break;
-				case 6:
-					run =1;
-					break;
-				}
-
-				break;
-			case "3": /////////////business
-				System.out.println("you chose business");
-				
-				System.out.println("choose city: ");
-				int k=0;
-				print_cities(cities);
-				System.out.println("choose the city you want based on the number");
-				int temp = integer.nextInt();
-				k = temp;
-				String city = cities.get(k-1).getCityName();
-				City poliSim = search_cities(cities, city);
-				
-				System.out.println("buisines similartty : " + business.Similarity(poliSim));
-				break;
-			case "4": /////////////tourist
-				System.out.println("you chose tourist");
-
-				System.out.println("choose city: ");
-					int j=0;
-					print_cities(cities);
-				System.out.println("choose the city you want based on the number");
-				int temp2 = integer.nextInt();
-				j = temp2;
-				String city2 = cities.get(j-1).getCityName();
-				City poliSim2 = search_cities(cities, city2);
-				System.out.println("tourist similarity: " + tourist.Similarity(poliSim2));
-				
-				break;
-			case "5":
-				print_cities(cities);
-				break;
-			case "6"://sorting travellers
-				Collections.sort(travellers);
-				System.out.println("travellers after sorting : "); 
-		        for (Traveller traveller3: travellers) 
-		        { 
-		            System.out.println(traveller3.getName() + " " + traveller3.getAge()); 
-		        }
-		        break;
-			case "7":
-				System.exit(0);
-				break;
-			default: 
-				System.out.println("wrong choice");
-			}//end go case
-		}//end of while
-		
-	}//end of main
-	
-	
-////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////
 	
 	
 	
@@ -526,24 +587,27 @@ public class Main implements Serializable {
 	
 	
 	
-	//RetrieveData(String city, String country, String appid,ArrayList<City> cities
 	static void create_city (ArrayList<City> cities) throws IOException {
-		Scanner integer = new Scanner(System.in);
-		Scanner string = new Scanner(System.in);
+		
+		 Scanner string = new Scanner(System.in);
 		 
-		 System.out.println("give the city you want to visit: ");
+		 //System.out.println("give the city you want to visit: ");
+		 //new CreateCityNameGui();
+		 String tmp = null;
 		 String cityname = string.nextLine();
+
 		 System.out.println("give the initials of the country the city is in: \n");
-		 String ctryname = string.nextLine();
+		 
 		 if (equals(cities, cityname) == true) {
-			 RetrieveData(cityname, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
+			 RetrieveData(cityname, tmp, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
 		 }else {
 			 System.out.println("city already exist in database");
 		 }
 
 	}
 	
-	
+
+
 	static void create_city (ArrayList<City> cities, String cityName) throws IOException {
 		 Scanner string = new Scanner(System.in);
 		 System.out.println("give the initials of the country the city is in: \n");
@@ -646,3 +710,162 @@ public class Main implements Serializable {
 
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+	
+	private JButton createCity;
+	private JButton traveller;
+	private JButton buissnessTraveller;
+	private JButton touristTraveller;
+	private JButton printCities;
+	private JButton showTravellers;
+	private JButton quit;
+	private JLabel note;
+	
+	private static String tmp;
+	
+	public FormPanel() {
+		Dimension dim = getPreferredSize();
+		dim.width = 250000;
+		setPreferredSize(dim);
+		
+		createCity = new JButton("createCity");
+		traveller = new JButton("traveller");
+		buissnessTraveller = new JButton("buissnessTraveller");
+		touristTraveller = new JButton("touristTraveller");
+		printCities = new JButton("printCities");
+		showTravellers = new JButton("showTravellers");
+		quit = new JButton("quit");
+		note = new JLabel("note: you must firtst create city and traveller before doing anything else!");
+		
+		createCity.addActionListener(this);
+		traveller.addActionListener(this);
+		buissnessTraveller.addActionListener(this);
+		touristTraveller.addActionListener(this);
+		printCities.addActionListener(this);
+		showTravellers.addActionListener(this);
+		quit.addActionListener(this);
+		
+//		Border innerBorder = BorderFactory.createTitledBorder("Main Menu");
+//		Border outerBorder = BorderFactory.createEtchedBorder();
+//		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
+		setBorder(BorderFactory.createTitledBorder("Main Menu"));
+		
+		setLayout(new GridBagLayout());
+		
+		GridBagConstraints gc = new GridBagConstraints();
+		
+		gc.gridx = 0;
+		gc.gridy = 0;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(createCity, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 1;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(traveller, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 2;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(buissnessTraveller, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 3;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(touristTraveller, gc);
+
+		gc.gridx = 0;
+		gc.gridy = 4;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(printCities, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 5;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(showTravellers, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 6;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(quit, gc);
+		
+		gc.gridx = 0;
+		gc.gridy = 7;
+		gc.weightx = 1;
+		gc.weighty = 1;
+		gc.fill = GridBagConstraints.NONE;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(note);
+		
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		JButton clicked = (JButton)e.getSource();
+		
+		if (clicked == createCity) {
+			tmp = "1";
+		} else if (clicked == traveller){
+			new TravellerGui();
+		}else if (clicked == buissnessTraveller) {
+			new BusinessTravellerGui();
+		}else if (clicked == touristTraveller) {
+			new TouristTravellerGui();
+		}else if (clicked == printCities) {
+			new PrintCitiesGui();
+		}else if (clicked == showTravellers) {
+			new ShowTravellersGui();
+		}else if (clicked == quit) {
+			
+		}else {
+			
+		}
+	}
+
+	public static String getTmp() {
+		return tmp;
+	}
+
+	public void setTmp(String tmp) {
+		this.tmp = tmp;
+	}
+	
+	*/
