@@ -1,5 +1,8 @@
 
 import java.util.*;
+
+import javax.swing.JOptionPane;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -90,7 +93,7 @@ public class Traveller extends City implements Comparable<Traveller>, Serializab
 			tmpCity.setLon(cities.get(i).getLon());
 			System.out.println(Similarity(tmpCity));
 			System.out.println(Similarity(maxCity));
-			if (Similarity(tmpCity) > Similarity(maxCity)) {
+			if (Similarity(tmpCity) >= Similarity(maxCity)) {
 				maxCity.setCityName(tmpCity.cityName);
 				maxCity.setMuseums(tmpCity.museums);
 				maxCity.setCafes(tmpCity.cafes);
@@ -117,14 +120,21 @@ public class Traveller extends City implements Comparable<Traveller>, Serializab
 			if (kairos == true) {
 				if (weatherbool.get(i).getWeather().equals("rain")) {
 					cities.add(weatherbool.get(i));
+				}else {
+					JOptionPane.showMessageDialog(null, "no cities with rain found");
+					System.out.println("no cities with rain found");
+					return CompareCities(weatherbool); 
 				}
 			}else if (kairos == false) {
 				if (!(weatherbool.get(i).getWeather().equals("rain"))) {
 					cities.add(weatherbool.get(i));
+				}else {
+					JOptionPane.showMessageDialog(null, "no cities without rain found");
+					System.out.println("no cities without rain found");
 				}
 			}
 		}
-		return CompareCities(cities);	
+		return CompareCities(cities);
 	}
 
 	@Override
