@@ -1,6 +1,3 @@
-
-
-
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,19 +8,20 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
+import java.util.*;
 import weather.Main;
 
 public class CreateCityNameGui extends JFrame {
 	
+	private JFrame frame;
 	private JLabel cityNameLbl;
 	private JTextField cityNameTxt;
 	private JButton okBtn;
 	private static String tmp;
-	
-	private String cityName;
-	private String countryName;
+	private static String cityName;
+	private static String countryName;
 	
 	public CreateCityNameGui() {
 		super("Create City");
@@ -31,7 +29,12 @@ public class CreateCityNameGui extends JFrame {
 		setLayout(new BorderLayout());
 		setSize(300, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
+		//setVisible(true);
+		
+		cityName = JOptionPane.showInputDialog(null, "give the city you want ot visit:");
+		countryName = JOptionPane.showInputDialog(null, "give the initials of the country you want ot visit:");
+		System.out.println(cityName);
+		System.out.println(countryName);
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints gc = new GridBagConstraints();
@@ -43,7 +46,6 @@ public class CreateCityNameGui extends JFrame {
 		
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				action(e);
 			}
 		});
 
@@ -82,7 +84,7 @@ public class CreateCityNameGui extends JFrame {
 		JButton clicked = (JButton)e.getSource();
 		if (clicked == okBtn) {
 			System.out.println(cityNameTxt.getText());
-			//tmp = cityNameTxt.getText();
+			tmp = cityNameTxt.getText();
 		}else {
 			// null;
 		}
@@ -96,6 +98,24 @@ public class CreateCityNameGui extends JFrame {
 	public void setTmp(String tmp) {
 		this.tmp = tmp;
 	}
+
+	public static String getCityName() {
+		return cityName;
+	}
+
+	public static void setCityName(String cityName) {
+		CreateCityNameGui.cityName = cityName;
+	}
+
+	public static String getCountryName() {
+		return countryName;
+	}
+
+	public static void setCountryName(String countryName) {
+		CreateCityNameGui.countryName = countryName;
+	}
+	
+	
 	
 	
 			

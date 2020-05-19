@@ -23,14 +23,8 @@ import javax.swing.JPanel;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
-import GUI.BusinessTravellerGui;
-import GUI.CreateCityNameGui;
-import GUI.MainMenu;
-import GUI.PrintCitiesGui;
-import GUI.ShowTravellersGui;
-import GUI.TouristTravellerGui;
-import GUI.TravellerGui;
 import weather.OpenWeatherMap;
 import wikipedia.MediaWiki;
 
@@ -66,12 +60,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import GUI.BusinessTravellerGui;
-import GUI.CreateCityNameGui;
-import GUI.PrintCitiesGui;
-import GUI.ShowTravellersGui;
-import GUI.TouristTravellerGui;
-import GUI.TravellerGui;
 
 
 /**
@@ -79,16 +67,10 @@ import GUI.TravellerGui;
  *
  * @author it218110
  */
-public class Main extends JFrame implements Serializable {
+public class App extends JFrame implements Serializable {
 	
 	private static final String filepath="obj.ser";
-	private static FormPanel formPanel;
 	
-	
-	// City(museums, cafes, weather, lat, lot)
-//	static City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
-//	static City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
-//	static City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
 
 	public static void main(String args[]) throws IOException, SQLException {
 		ArrayList <City> cities = new ArrayList<City>();
@@ -102,11 +84,9 @@ public class Main extends JFrame implements Serializable {
 		
 		makeJDBCConnection();
 		ReadData(cities);
+		print_cities(cities);
 		
-//		// City(museums, cafes, weather, lat, lot)
-//		City athens = new City("athens", 40, 100, "rain", 103.321, 334.321);
-//		City thesaloniki = new City("thelsalloniki", 50, 300, "clear", 123.321, 534.311);
-//		City ioannina = new City("ioannina", 60, 600, "rain", 503.221, 134.921);
+
 		City canditateCity = new City("", 0, 0, "", 0, 0);
 		
 		
@@ -119,7 +99,7 @@ public class Main extends JFrame implements Serializable {
 		
 		ArrayList<Traveller> travellers = new ArrayList<>();
 		//traveller2.read();
-		Main objectIO = new Main();
+		App objectIO = new App();
 		//objectIO.WriteObjectToFile(filepath, traveller2);
 		
         //Read object from file
@@ -127,82 +107,76 @@ public class Main extends JFrame implements Serializable {
 		
 		print_travellers(travellers);
 		
-		//
 		
-		formPanel.setLayout(new BorderLayout());
 		
-		formPanel = new FormPanel();
-		formPanel.add(formPanel, BorderLayout.WEST);
-		
-		formPanel.setSize(600, 600);
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		formPanel.setVisible(true);
-		
-		formPanel.setLayout(new GridBagLayout());
-		GridBagConstraints gc = new GridBagConstraints();
 		
 		while (true) {
-			//new MainMenu();
+			new MainMenu();
 			System.out.println("note: you must firtst create city and traveller before doing anything else!");
 			System.out.println("1.Create City\n2.Traveller\n3.Buissness Traveller\n4.Tourist Traveller\n5.Print Cities\n6.Show travellers\n7.Quit");
-			String choice = string.nextLine();
+			int choice = MainMenu.getReturnValue();
 			
 			//String choice = FormPanel.getTmp();
 			
 			switch(choice) {
-			case "1":
+			case 0:
 				create_city(cities);
 				//new MainMenu();
 				break;
-			case "2":  //simple traveller
-				
-				System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller \n5) free ticket \n6) back");
-				int tmpchoice = integer.nextInt();
+			case 1:  //simple traveller
+				int i = 0;
+				String[] buttons = { "Create Traveller", "Similarity", "Compaire cities", "print traveller", "free ticket", "back"};    
+				int returnValue = JOptionPane.showOptionDialog(null, "Traveller", "Narrative",
+				        JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[i]);
+				//System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller \n5) free ticket \n6) back");
+				int tmpchoice = returnValue;
 				int run =0;
-
+				
 				switch(tmpchoice) {
-				case 1://create traveller
+				case 0://create traveller
 					Traveller traveller = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers); // this is traveller
-					//traveller=traveller2;
-					System.out.println("give name");
-					name = string.nextLine();
+					name = JOptionPane.showInputDialog(null, "give name:");
+					//System.out.println("give name");
+					//name = string.nextLine();
 					traveller.setName(name);
 						
-					System.out.println("give age");
-					age = integer.nextInt();
+					age = Integer.parseInt(JOptionPane.showInputDialog(null, "give age:"));
+					//System.out.println("give age");
+					//age = integer.nextInt();
 					traveller.setAge(age);
 						
 					
 						
 					Scanner ans = new Scanner(System.in);
-					System.out.println("you choose traveller");
+//					System.out.println("you choose traveller");
+					JOptionPane.showMessageDialog(null, "you choose traveller!");
 					
-					System.out.println("do you like museums?"); //mousia
-					
-					System.out.println("1.yes/2.no");
-					
-					int ansmus = ans.nextInt();
-					
-					System.out.printf("ansmus:" + ansmus);
-					
-					if (ansmus == 1) {
+//					System.out.println("do you like museums?"); //mousia
+//					System.out.println("1.yes/2.no");
+//					int ansmus = ans.nextInt();
+					String[] buttons1 = { "yes", "no"};
+					int ansmus = JOptionPane.showOptionDialog(null, "do you like museums?", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttons1, buttons1[i]);
+					if (ansmus == 0) { //==1
 						traveller.setMuseums(1);
 						System.out.printf("set musia" + traveller.getMuseums());
 					}
 					
-					
 						
-					System.out.println("do you like cafes?"); //cafes
-					System.out.println("1.yes/2.no");
-					int anscafe = ans.nextInt();
-					if (anscafe == 1) {
+//					System.out.println("do you like cafes?"); //cafes
+//					System.out.println("1.yes/2.no");
+//					int anscafe = ans.nextInt();
+					String[] buttons2 = { "yes", "no"};
+					int anscafe = JOptionPane.showOptionDialog(null, "do you like cafes?", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttons2, buttons2[i]);
+					if (anscafe == 0) { //==1
 						traveller.setCafes(1);
 					}
 						
-					System.out.println("do you like rain?"); //kairos
-					System.out.println("1.yes/2.no");
-					int answeather = ans.nextInt();
-					if (answeather == 1) {
+//					System.out.println("do you like rain?"); //kairos
+//					System.out.println("1.yes/2.no");
+//					int answeather = ans.nextInt();
+					String[] buttons3 = { "yes", "no"};
+					int answeather = JOptionPane.showOptionDialog(null, "do you like cafes?", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttons3, buttons3[i]);
+					if (answeather == 0) { //==1
 						traveller.setWeather("rain");
 					}
 					
@@ -211,29 +185,35 @@ public class Main extends JFrame implements Serializable {
 				        travellers.add(traveller);
 				        objectIO.WriteObjectToFile(filepath, travellers);
 					}else {
-						System.out.println("this traveller already exists\n");
+						JOptionPane.showMessageDialog(null, "this traveller already exists", "Failure", JOptionPane.ERROR_MESSAGE);
+						//System.out.println("this traveller already exists\n");
 					}
-					
-					new MainMenu();
 					break;
-				case 2://similarity
+				case 1://similarity
 					Traveller taksidiotisSim = search_travellers(travellers, name);
-					System.out.println("wanna choose from a list press 1\nwanna type your own press 2\n");
-					int var = integer.nextInt();
+//					System.out.println("wanna choose from a list press 1\nwanna type your own press 2\n");
+//					int var = integer.nextInt();
+					String[] buttonssim = { "wanna choose from a list", "wanna type your own"};
+					int var = JOptionPane.showOptionDialog(null, "similarity", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttonssim, buttonssim[i]);
 					switch(var) {
-					case 1:
+					case 0:
 						System.out.println("choose city: ");
 						int k=0;
 						print_cities(cities);
-						System.out.println("choose the city you want based on the number");
-						int temp = integer.nextInt();
+//						System.out.println("choose the city you want based on the number");
+//						int temp = integer.nextInt();
+						String[] bottons = new String[cities.size()];
+						for(int arr=0; arr<cities.size(); arr++) {
+							bottons[arr] = cities.get(arr).getCityName();
+						}
+						int temp = JOptionPane.showOptionDialog(null, "choose the city you want based on the number", "similarity",JOptionPane.WARNING_MESSAGE, 0, null, bottons, bottons[i]);
 						k = temp;
-						String city = cities.get(k-1).getCityName();
+						String city = cities.get(k).getCityName();
 						canditateCity.setCityName(city);
 						break;
-					case 2:
-						System.out.println("give city name");
-						String cityname = string.nextLine();
+					case 1:
+						//System.out.println("give city name");
+						String cityname = JOptionPane.showInputDialog(null, "give city name:");
 						search_cities(cities, cityname);
 						canditateCity.setCityName(cityname);
 
@@ -241,74 +221,92 @@ public class Main extends JFrame implements Serializable {
 					City poliSim = search_cities(cities, canditateCity.cityName);
 					taksidiotisSim.Similarity(poliSim);
 					System.out.println("the answer of similarity is : " + taksidiotisSim.Similarity(poliSim) + "\n");
-
-					
 					break;
-				case 3://Compare cities
+				case 2://Compare cities
 					Scanner bool = new Scanner (System.in);
 					boolean tmp = false;
 					String name2 = null;
 					print_travellers(travellers);
-					name2 = string.nextLine();
+					name2 = JOptionPane.showInputDialog(null, "write the name of the traveller");
+					//System.out.printf("write the name of the traveller\n");
+					//name2 = string.nextLine();
 					Traveller taksidiotisCmp = search_travellers(travellers, name2);
-					System.out.printf("do you care about rain? true/false");
-					tmp = bool.nextBoolean();
+					//System.out.printf("do you care about rain? true/false\n");
+					int countertf =0;
+					Boolean[] buttonstf = {true, false};
+					int  value= JOptionPane.showOptionDialog(null, "choose city:", "business",JOptionPane.WARNING_MESSAGE, 0, null, buttonstf, buttonstf[countertf]);;
+					if (value == 0) {
+						tmp=true;
+					}
 					taksidiotisCmp.CompareCities(tmp, cities);
 					break;
-				case 4://print traveller
+				case 3://print traveller
 					//print_travellers(travellers);
+					JOptionPane.showMessageDialog(null, "name: " + name + "\nage: " + age + "\ncurrent location: " + currlatlon);
 					System.out.println("name: " + name + "\nage: " + age + "\ncurrent location: " + currlatlon);
 					break;
-				case 5: //free ticket
+				case 4: //free ticket
 					freeTicket(travellers, cities);
 					break;
-				case 6:
+				case 5:
 					run =1;
 					break;
 				}
 
 				break;
-			case "3": /////////////business
-				System.out.println("you chose business");
-				
-				System.out.println("choose city: ");
+			case 2: /////////////business
+				JOptionPane.showMessageDialog(null, "you chose business");
+				//System.out.println("you chose business");
+				int bussinesscounter=0;
+				String[] businessbottons = new String[cities.size()];
+				for(int arr=0; arr<cities.size(); arr++) {
+					businessbottons[arr] = cities.get(arr).getCityName();
+				}
+				int temp = JOptionPane.showOptionDialog(null, "choose city:", "business",JOptionPane.WARNING_MESSAGE, 0, null, businessbottons, businessbottons[bussinesscounter]);
+				//System.out.println("choose city: ");
 				int k=0;
-				print_cities(cities);
-				System.out.println("choose the city you want based on the number");
-				int temp = integer.nextInt();
+				//print_cities(cities);
+				//System.out.println("choose the city you want based on the number");
+				//int tmpchoosecity = integer.nextInt();
 				k = temp;
 				String city = cities.get(k-1).getCityName();
 				City poliSim = search_cities(cities, city);
-				
-				System.out.println("buisines similartty : " + business.Similarity(poliSim));
-				new MainMenu();
+				JOptionPane.showMessageDialog(null, "buisines similartty : " + business.Similarity(poliSim));
+				//System.out.println("buisines similartty : " + business.Similarity(poliSim));
 				break;
-			case "4": /////////////tourist
-				System.out.println("you chose tourist");
+			case 3: /////////////tourist
+				JOptionPane.showMessageDialog(null, "you chose tourist");
+				//System.out.println("you chose tourist");
 
-				System.out.println("choose city: ");
-					int j=0;
-					print_cities(cities);
-				System.out.println("choose the city you want based on the number");
-				int temp2 = integer.nextInt();
+				int touristcounter=0;
+				String[] touristbottons = new String[cities.size()];
+				for(int arr=0; arr<cities.size(); arr++) {
+					touristbottons[arr] = cities.get(arr).getCityName();
+				}
+				int temp2 = JOptionPane.showOptionDialog(null, "choose city:", "tourist",JOptionPane.WARNING_MESSAGE, 0, null, touristbottons, touristbottons[touristcounter]);
+				//System.out.println("choose city: ");
+				int j=0;
+				//print_cities(cities);
+				//System.out.println("choose the city you want based on the number");
 				j = temp2;
 				String city2 = cities.get(j-1).getCityName();
 				City poliSim2 = search_cities(cities, city2);
-				System.out.println("tourist similarity: " + tourist.Similarity(poliSim2));
-				new MainMenu();
+				//System.out.println("tourist similarity: " + tourist.Similarity(poliSim2));
+				JOptionPane.showMessageDialog(null, "tourist similarity: " + tourist.Similarity(poliSim2));
 				break;
-			case "5":
+			case 4:
 				print_cities(cities);
 				break;
-			case "6"://sorting travellers
+			case 5://sorting travellers
 				Collections.sort(travellers);
 				System.out.println("travellers after sorting : "); 
 		        for (Traveller traveller3: travellers) 
 		        { 
-		            System.out.println(traveller3.getName() + " " + traveller3.getAge()); 
+		        	JOptionPane.showMessageDialog(null,traveller3.getName() + " " + traveller3.getAge());
+		            //System.out.println(traveller3.getName() + " " + traveller3.getAge()); 
 		        }
 		        break;
-			case "7":
+			case 6:
 				System.exit(0);
 				break;
 			default: 
@@ -382,9 +380,11 @@ public class Main extends JFrame implements Serializable {
 			 
 			try {//We check that the DB Driver is available in our project.		
 				Class.forName("oracle.jdbc.driver.OracleDriver"); //This code line is to check that JDBC driver is available. Or else it will throw an exception. Check it with 2. 
-				System.out.println("Congrats - Seems your MySQL JDBC Driver Registered!"); 
+				//System.out.println("Congrats - Seems your MySQL JDBC Driver Registered!");
+				JOptionPane.showMessageDialog(null, "Congrats - Seems your MySQL JDBC Driver Registered!");
 			} catch (ClassNotFoundException e) {
-				System.out.println("Sorry, couldn't found JDBC driver. Make sure you have added JDBC Maven Dependency Correctly");
+				//System.out.println("Sorry, couldn't found JDBC driver. Make sure you have added JDBC Maven Dependency Correctly");
+				JOptionPane.showMessageDialog(null, "Sorry, couldn't found JDBC driver. Make sure you have added JDBC Maven Dependency Correctly", "Failure", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 				return;
 			}
@@ -394,13 +394,15 @@ public class Main extends JFrame implements Serializable {
 				db_con_obj = DriverManager.getConnection("jdbc:oracle:thin:@oracle12c.hua.gr:1521:orcl","it218110","it218110");// Returns a connection to the URL.
 				//Attempts to establish a connection to the given database URL. The DriverManager attempts to select an appropriate driver from the set of registered JDBC drivers.
 				if (db_con_obj != null) { 
-					System.out.println("Connection Successful! Enjoy. Now it's time to CRUD data. ");
-					
+					JOptionPane.showMessageDialog(null, "Connection Successful! Enjoy. Now it's time to CRUD data.");
+					//System.out.println("Connection Successful! Enjoy. Now it's time to CRUD data. ");
 				} else {
-					System.out.println("Failed to make connection!");
+					//System.out.println("Failed to make connection!");
+					JOptionPane.showMessageDialog(null, "Failed to make connection!", "Failure", JOptionPane.ERROR_MESSAGE);
 				}
 			} catch (SQLException e) {
-				System.out.println("MySQL Connection Failed!");
+				//System.out.println("MySQL Connection Failed!");
+				JOptionPane.showMessageDialog(null, "MySQL Connection Failed!", "Failure", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 				return;
 			}
@@ -466,14 +468,6 @@ public class Main extends JFrame implements Serializable {
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
 	
 	
 	
@@ -484,8 +478,8 @@ public class Main extends JFrame implements Serializable {
 		print_cities(cities);
 		
 		int k = 0;
-		Scanner sc = new Scanner(System.in);
-		String name = sc.nextLine();
+		//Scanner sc = new Scanner(System.in);
+		String name = JOptionPane.showInputDialog(null, "name:");
 		City tmp;
 		double tmpSimilarity, maxSimilarity = 0;
 		tmp = search_cities(cities, name);
@@ -494,9 +488,11 @@ public class Main extends JFrame implements Serializable {
 			if (travellers.get(i).Similarity(tmp) > maxSimilarity) {
 				k = i;
 				maxSimilarity = travellers.get(i).Similarity(tmp);
+				JOptionPane.showMessageDialog(null, maxSimilarity);
 				System.out.println(maxSimilarity);
 			}
 		}
+		JOptionPane.showMessageDialog(null, travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName());
 		System.out.println(travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName());
 		//search_cities(cities, cityName);
 	}
@@ -513,6 +509,19 @@ public class Main extends JFrame implements Serializable {
 					"\tcafes: " + cities.get(i).getCafes() + "\tweather: " + cities.get(i).getWeather() + "\tLatitude: " +
 					cities.get(i).getLat() +"\tLonitude " + cities.get(i).getLon());
 		}
+		String[] bottons = new String[cities.size()];
+		int arr=0;
+		for(int i=0; i<cities.size(); i++) {
+			bottons[arr] = cities.get(i).getCityName();
+			bottons[arr+1] = Integer.toString(cities.get(i).getMuseums());
+			bottons[arr+2] = Integer.toString(cities.get(i).getCafes());
+			bottons[arr+3] = cities.get(i).getWeather();
+			bottons[arr+4] = Double.toString(cities.get(i).getLat());
+			bottons[arr+5] = Double.toString(cities.get(i).getLon());
+			JOptionPane.showMessageDialog(null, bottons);
+		}
+		
+		
 	}
 	
 	
@@ -534,30 +543,59 @@ public class Main extends JFrame implements Serializable {
 	public static City search_cities(ArrayList<City> cities, String cityName) {
 		Scanner sc = new Scanner(System.in);
 		City tmp = null;
+		int nigga = 0;
 		for (int i=0; i<cities.size(); i++) {
-			if (cities.get(i).getCityName().contentEquals(cityName)) {
+			//if (cities.get(i).getCityName().contentEquals(cityName)) {
+			if (cityName.equals(cities.get(i).getCityName())) {
 				tmp = cities.get(i);
-			}else {
-				System.out.println("city not found");
-				System.out.println("1) Do nothing\n2) Create a city");
-				int noumero = sc.nextInt();
+				nigga=1;
+				System.out.println("city found");
+				int j=0;
+				String[] buttons = { "yes", "no"};    
+				int returnValue = JOptionPane.showOptionDialog(null, "do you want to return that city?", "Narrative",
+				        JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[j]);
+				System.out.println(returnValue);
+				int noumero = returnValue;//sc.nextInt();
 				switch(noumero) {
+				case 0:
+					System.out.println(tmp.getCityName());
+					return tmp;
 				case 1:
-					break;
-				case 2:
-					try {
-						create_city(cities, cityName);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					break;
 				default:
 					System.out.println("wrong option");
 				}
-				
-			}
+				break;
+			}//else {
 		}
+				if (nigga == 0) {
+					int i = 0;
+					String[] buttons = { "Do nothing", "Create a city"};    
+					int returnValue = JOptionPane.showOptionDialog(null, "Narrative", "Narrative",
+					        JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[i]);
+					System.out.println(returnValue);
+					System.out.println("city not found");
+					System.out.println("0) Do nothing\n1) Create a city");
+					int noumero = returnValue;//sc.nextInt();
+					switch(noumero) {
+					case 0:
+						break;
+					case 1:
+						try {
+							create_city(cities, cityName);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
+					default:
+						System.out.println("wrong option");
+					}
+				}
+				
+				
+			//}
+		
 		
 		return tmp;
 	}
@@ -574,7 +612,7 @@ public class Main extends JFrame implements Serializable {
 		
 		for (int i=0; i<traveller.size(); i++) {
 			
-			if (traveller.get(i).getName() == name) {
+			if (traveller.get(i).getName().equals(name)) {
 				
 				//tmp.setCityName(cities.get(i).getCityName());
 				tmp = traveller.get(i);
@@ -614,20 +652,19 @@ public class Main extends JFrame implements Serializable {
 	
 	
 	
-	static void create_city (ArrayList<City> cities) throws IOException {
-		
-		 Scanner string = new Scanner(System.in);
-		 
-		 //System.out.println("give the city you want to visit: ");
+	static void create_city (ArrayList<City> cities) throws IOException{
+		 String cityName = JOptionPane.showInputDialog(null, "give the city you want ot visit:");
+		 String countryName = JOptionPane.showInputDialog(null, "give the initials of the country you want ot visit:");
 		 //new CreateCityNameGui();
-		 String tmp = null;
-		 String cityname = string.nextLine();
-
-		 System.out.println("give the initials of the country the city is in: \n");
-		 
-		 if (equals(cities, cityname) == true) {
-			 RetrieveData(cityname, tmp, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
+		 //Scanner string = new Scanner(System.in);
+		 //System.out.println("give the city you want to visit: ");
+		 //String cityname = CreateCityNameGui.getCityName();
+		 //String countryName = CreateCityNameGui.getCountryName();
+		 //System.out.println("give the initials of the country the city is in: \n");
+		 if (equals(cities, cityName) == true) {
+			 RetrieveData(cityName, countryName, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
 		 }else {
+			 JOptionPane.showMessageDialog(null, "city already exist in database");
 			 System.out.println("city already exist in database");
 		 }
 
@@ -638,7 +675,8 @@ public class Main extends JFrame implements Serializable {
 	static void create_city (ArrayList<City> cities, String cityName) throws IOException {
 		 Scanner string = new Scanner(System.in);
 		 System.out.println("give the initials of the country the city is in: \n");
-		 String ctryname = string.nextLine();
+		 //String ctryname = string.nextLine();
+		 String ctryname = JOptionPane.showInputDialog(null, "give the initials of the country the city is in:");
 		 RetrieveData(cityName, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
 	}
 
@@ -738,161 +776,3 @@ public class Main extends JFrame implements Serializable {
 	
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-
-
-
-	
-	private JButton createCity;
-	private JButton traveller;
-	private JButton buissnessTraveller;
-	private JButton touristTraveller;
-	private JButton printCities;
-	private JButton showTravellers;
-	private JButton quit;
-	private JLabel note;
-	
-	private static String tmp;
-	
-	public FormPanel() {
-		Dimension dim = getPreferredSize();
-		dim.width = 250000;
-		setPreferredSize(dim);
-		
-		createCity = new JButton("createCity");
-		traveller = new JButton("traveller");
-		buissnessTraveller = new JButton("buissnessTraveller");
-		touristTraveller = new JButton("touristTraveller");
-		printCities = new JButton("printCities");
-		showTravellers = new JButton("showTravellers");
-		quit = new JButton("quit");
-		note = new JLabel("note: you must firtst create city and traveller before doing anything else!");
-		
-		createCity.addActionListener(this);
-		traveller.addActionListener(this);
-		buissnessTraveller.addActionListener(this);
-		touristTraveller.addActionListener(this);
-		printCities.addActionListener(this);
-		showTravellers.addActionListener(this);
-		quit.addActionListener(this);
-		
-//		Border innerBorder = BorderFactory.createTitledBorder("Main Menu");
-//		Border outerBorder = BorderFactory.createEtchedBorder();
-//		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
-		setBorder(BorderFactory.createTitledBorder("Main Menu"));
-		
-		setLayout(new GridBagLayout());
-		
-		GridBagConstraints gc = new GridBagConstraints();
-		
-		gc.gridx = 0;
-		gc.gridy = 0;
-		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		add(createCity, gc);
-		
-		gc.gridx = 0;
-		gc.gridy = 1;
-		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		add(traveller, gc);
-		
-		gc.gridx = 0;
-		gc.gridy = 2;
-		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		add(buissnessTraveller, gc);
-		
-		gc.gridx = 0;
-		gc.gridy = 3;
-		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		add(touristTraveller, gc);
-
-		gc.gridx = 0;
-		gc.gridy = 4;
-		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		add(printCities, gc);
-		
-		gc.gridx = 0;
-		gc.gridy = 5;
-		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		add(showTravellers, gc);
-		
-		gc.gridx = 0;
-		gc.gridy = 6;
-		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		add(quit, gc);
-		
-		gc.gridx = 0;
-		gc.gridy = 7;
-		gc.weightx = 1;
-		gc.weighty = 1;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LINE_START;
-		add(note);
-		
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-		JButton clicked = (JButton)e.getSource();
-		
-		if (clicked == createCity) {
-			tmp = "1";
-		} else if (clicked == traveller){
-			new TravellerGui();
-		}else if (clicked == buissnessTraveller) {
-			new BusinessTravellerGui();
-		}else if (clicked == touristTraveller) {
-			new TouristTravellerGui();
-		}else if (clicked == printCities) {
-			new PrintCitiesGui();
-		}else if (clicked == showTravellers) {
-			new ShowTravellersGui();
-		}else if (clicked == quit) {
-			
-		}else {
-			
-		}
-	}
-
-	public static String getTmp() {
-		return tmp;
-	}
-
-	public void setTmp(String tmp) {
-		this.tmp = tmp;
-	}
-	
-	*/
