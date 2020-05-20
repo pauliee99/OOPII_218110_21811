@@ -79,12 +79,10 @@ public class App extends JFrame implements Serializable {
 		File file = new File("filename.txt");
 		String line;
 		String appid ="e9e0d5d96bd08a8c6d75d8b02a24b974";
-		//RetrieveData("rome","it",appid,cities);
-		//create_city(cities);
 		
 		makeJDBCConnection();
 		ReadData(cities);
-		print_cities(cities);
+		//print_cities(cities);
 		
 
 		City canditateCity = new City("", 0, 0, "", 0, 0);
@@ -98,37 +96,30 @@ public class App extends JFrame implements Serializable {
 		Traveller traveller2 = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);		
 		
 		ArrayList<Traveller> travellers = new ArrayList<>();
-		//traveller2.read();
 		App objectIO = new App();
-		//objectIO.WriteObjectToFile(filepath, traveller2);
-		
-        //Read object from file
 		objectIO.ReadObjectFromFile(filepath, travellers);
 		
 		print_travellers(travellers);
 		
 		
-		
-		
 		while (true) {
-			new MainMenu();
+			int mm = 0;
+			String[] mainMenubuttons = { "create city", "Traveller", "buisiness Traveller", "tourist Traveller", "Print Cities", "Show travellers", "Quit" };    
+			int mainMenu = JOptionPane.showOptionDialog(null, "Main Menu", "Narrative",
+			        JOptionPane.WARNING_MESSAGE, 0, null, mainMenubuttons, mainMenubuttons[mm]);
+			System.out.println(mainMenu);
 			System.out.println("note: you must firtst create city and traveller before doing anything else!");
 			System.out.println("1.Create City\n2.Traveller\n3.Buissness Traveller\n4.Tourist Traveller\n5.Print Cities\n6.Show travellers\n7.Quit");
-			int choice = MainMenu.getReturnValue();
 			
-			//String choice = FormPanel.getTmp();
-			
-			switch(choice) {
+			switch(mainMenu) {
 			case 0:
 				create_city(cities);
-				//new MainMenu();
 				break;
 			case 1:  //simple traveller
 				int i = 0;
 				String[] buttons = { "Create Traveller", "Similarity", "Compaire cities", "print traveller", "free ticket", "back"};    
 				int returnValue = JOptionPane.showOptionDialog(null, "Traveller", "Narrative",
 				        JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[i]);
-				//System.out.println("1) Create Traveller \n2) Similarity \n3) Compaire cities \n4) print traveller \n5) free ticket \n6) back");
 				int tmpchoice = returnValue;
 				int run =0;
 				
@@ -136,24 +127,15 @@ public class App extends JFrame implements Serializable {
 				case 0://create traveller
 					Traveller traveller = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers); // this is traveller
 					name = JOptionPane.showInputDialog(null, "give name:");
-					//System.out.println("give name");
-					//name = string.nextLine();
 					traveller.setName(name);
 						
 					age = Integer.parseInt(JOptionPane.showInputDialog(null, "give age:"));
-					//System.out.println("give age");
-					//age = integer.nextInt();
 					traveller.setAge(age);
 						
 					
 						
-					Scanner ans = new Scanner(System.in);
-//					System.out.println("you choose traveller");
 					JOptionPane.showMessageDialog(null, "you choose traveller!");
 					
-//					System.out.println("do you like museums?"); //mousia
-//					System.out.println("1.yes/2.no");
-//					int ansmus = ans.nextInt();
 					String[] buttons1 = { "yes", "no"};
 					int ansmus = JOptionPane.showOptionDialog(null, "do you like museums?", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttons1, buttons1[i]);
 					if (ansmus == 0) { //==1
@@ -162,21 +144,15 @@ public class App extends JFrame implements Serializable {
 					}
 					
 						
-//					System.out.println("do you like cafes?"); //cafes
-//					System.out.println("1.yes/2.no");
-//					int anscafe = ans.nextInt();
 					String[] buttons2 = { "yes", "no"};
 					int anscafe = JOptionPane.showOptionDialog(null, "do you like cafes?", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttons2, buttons2[i]);
 					if (anscafe == 0) { //==1
 						traveller.setCafes(1);
 					}
 						
-//					System.out.println("do you like rain?"); //kairos
-//					System.out.println("1.yes/2.no");
-//					int answeather = ans.nextInt();
 					String[] buttons3 = { "yes", "no"};
 					int answeather = JOptionPane.showOptionDialog(null, "do you like cafes?", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttons3, buttons3[i]);
-					if (answeather == 0) { //==1
+					if (answeather == 0) {
 						traveller.setWeather("rain");
 					}
 					
@@ -186,13 +162,10 @@ public class App extends JFrame implements Serializable {
 				        objectIO.WriteObjectToFile(filepath, travellers);
 					}else {
 						JOptionPane.showMessageDialog(null, "this traveller already exists", "Failure", JOptionPane.ERROR_MESSAGE);
-						//System.out.println("this traveller already exists\n");
 					}
 					break;
 				case 1://similarity
 					Traveller taksidiotisSim = search_travellers(travellers, name);
-//					System.out.println("wanna choose from a list press 1\nwanna type your own press 2\n");
-//					int var = integer.nextInt();
 					String[] buttonssim = { "wanna choose from a list", "wanna type your own"};
 					int var = JOptionPane.showOptionDialog(null, "similarity", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttonssim, buttonssim[i]);
 					switch(var) {
@@ -200,8 +173,6 @@ public class App extends JFrame implements Serializable {
 						System.out.println("choose city: ");
 						int k=0;
 						print_cities(cities);
-//						System.out.println("choose the city you want based on the number");
-//						int temp = integer.nextInt();
 						String[] bottons = new String[cities.size()];
 						for(int arr=0; arr<cities.size(); arr++) {
 							bottons[arr] = cities.get(arr).getCityName();
@@ -212,7 +183,6 @@ public class App extends JFrame implements Serializable {
 						canditateCity.setCityName(city);
 						break;
 					case 1:
-						//System.out.println("give city name");
 						String cityname = JOptionPane.showInputDialog(null, "give city name:");
 						search_cities(cities, cityname);
 						canditateCity.setCityName(cityname);
@@ -228,10 +198,7 @@ public class App extends JFrame implements Serializable {
 					String name2 = null;
 					print_travellers(travellers);
 					name2 = JOptionPane.showInputDialog(null, "write the name of the traveller");
-					//System.out.printf("write the name of the traveller\n");
-					//name2 = string.nextLine();
 					Traveller taksidiotisCmp = search_travellers(travellers, name2);
-					//System.out.printf("do you care about rain? true/false\n");
 					int countertf =0;
 					Boolean[] buttonstf = {true, false};
 					int  value= JOptionPane.showOptionDialog(null, "choose city:", "business",JOptionPane.WARNING_MESSAGE, 0, null, buttonstf, buttonstf[countertf]);;
@@ -241,7 +208,6 @@ public class App extends JFrame implements Serializable {
 					taksidiotisCmp.CompareCities(tmp, cities);
 					break;
 				case 3://print traveller
-					//print_travellers(travellers);
 					JOptionPane.showMessageDialog(null, "name: " + name + "\nage: " + age + "\ncurrent location: " + currlatlon);
 					System.out.println("name: " + name + "\nage: " + age + "\ncurrent location: " + currlatlon);
 					break;
@@ -256,27 +222,20 @@ public class App extends JFrame implements Serializable {
 				break;
 			case 2: /////////////business
 				JOptionPane.showMessageDialog(null, "you chose business");
-				//System.out.println("you chose business");
 				int bussinesscounter=0;
 				String[] businessbottons = new String[cities.size()];
 				for(int arr=0; arr<cities.size(); arr++) {
 					businessbottons[arr] = cities.get(arr).getCityName();
 				}
 				int temp = JOptionPane.showOptionDialog(null, "choose city:", "business",JOptionPane.WARNING_MESSAGE, 0, null, businessbottons, businessbottons[bussinesscounter]);
-				//System.out.println("choose city: ");
 				int k=0;
-				//print_cities(cities);
-				//System.out.println("choose the city you want based on the number");
-				//int tmpchoosecity = integer.nextInt();
 				k = temp;
 				String city = cities.get(k-1).getCityName();
 				City poliSim = search_cities(cities, city);
 				JOptionPane.showMessageDialog(null, "buisines similartty : " + business.Similarity(poliSim));
-				//System.out.println("buisines similartty : " + business.Similarity(poliSim));
 				break;
 			case 3: /////////////tourist
 				JOptionPane.showMessageDialog(null, "you chose tourist");
-				//System.out.println("you chose tourist");
 
 				int touristcounter=0;
 				String[] touristbottons = new String[cities.size()];
@@ -284,14 +243,10 @@ public class App extends JFrame implements Serializable {
 					touristbottons[arr] = cities.get(arr).getCityName();
 				}
 				int temp2 = JOptionPane.showOptionDialog(null, "choose city:", "tourist",JOptionPane.WARNING_MESSAGE, 0, null, touristbottons, touristbottons[touristcounter]);
-				//System.out.println("choose city: ");
 				int j=0;
-				//print_cities(cities);
-				//System.out.println("choose the city you want based on the number");
 				j = temp2;
 				String city2 = cities.get(j-1).getCityName();
 				City poliSim2 = search_cities(cities, city2);
-				//System.out.println("tourist similarity: " + tourist.Similarity(poliSim2));
 				JOptionPane.showMessageDialog(null, "tourist similarity: " + tourist.Similarity(poliSim2));
 				break;
 			case 4:
@@ -303,7 +258,6 @@ public class App extends JFrame implements Serializable {
 		        for (Traveller traveller3: travellers) 
 		        { 
 		        	JOptionPane.showMessageDialog(null,traveller3.getName() + " " + traveller3.getAge());
-		            //System.out.println(traveller3.getName() + " " + traveller3.getAge()); 
 		        }
 		        break;
 			case 6:
@@ -319,8 +273,6 @@ public class App extends JFrame implements Serializable {
 	
 ////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////
-	
-	
 	
 	
 	
@@ -494,7 +446,6 @@ public class App extends JFrame implements Serializable {
 		}
 		JOptionPane.showMessageDialog(null, travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName());
 		System.out.println(travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName());
-		//search_cities(cities, cityName);
 	}
 	
 	
@@ -545,7 +496,6 @@ public class App extends JFrame implements Serializable {
 		City tmp = null;
 		int nigga = 0;
 		for (int i=0; i<cities.size(); i++) {
-			//if (cities.get(i).getCityName().contentEquals(cityName)) {
 			if (cityName.equals(cities.get(i).getCityName())) {
 				tmp = cities.get(i);
 				nigga=1;
@@ -584,7 +534,6 @@ public class App extends JFrame implements Serializable {
 						try {
 							create_city(cities, cityName);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						break;
@@ -594,9 +543,6 @@ public class App extends JFrame implements Serializable {
 				}
 				
 				
-			//}
-		
-		
 		return tmp;
 	}
 	
@@ -614,7 +560,6 @@ public class App extends JFrame implements Serializable {
 			
 			if (traveller.get(i).getName().equals(name)) {
 				
-				//tmp.setCityName(cities.get(i).getCityName());
 				tmp = traveller.get(i);
 			}
 		}
@@ -655,12 +600,6 @@ public class App extends JFrame implements Serializable {
 	static void create_city (ArrayList<City> cities) throws IOException{
 		 String cityName = JOptionPane.showInputDialog(null, "give the city you want ot visit:");
 		 String countryName = JOptionPane.showInputDialog(null, "give the initials of the country you want ot visit:");
-		 //new CreateCityNameGui();
-		 //Scanner string = new Scanner(System.in);
-		 //System.out.println("give the city you want to visit: ");
-		 //String cityname = CreateCityNameGui.getCityName();
-		 //String countryName = CreateCityNameGui.getCountryName();
-		 //System.out.println("give the initials of the country the city is in: \n");
 		 if (equals(cities, cityName) == true) {
 			 RetrieveData(cityName, countryName, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
 		 }else {
@@ -675,7 +614,6 @@ public class App extends JFrame implements Serializable {
 	static void create_city (ArrayList<City> cities, String cityName) throws IOException {
 		 Scanner string = new Scanner(System.in);
 		 System.out.println("give the initials of the country the city is in: \n");
-		 //String ctryname = string.nextLine();
 		 String ctryname = JOptionPane.showInputDialog(null, "give the initials of the country the city is in:");
 		 RetrieveData(cityName, ctryname, "e9e0d5d96bd08a8c6d75d8b02a24b974", cities);
 	}
