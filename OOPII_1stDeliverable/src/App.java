@@ -7,6 +7,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -67,10 +71,10 @@ import javax.swing.JPanel;
  *
  * @author it218110
  */
+@SuppressWarnings("serial")
 public class App extends JFrame implements Serializable {
 	
 	private static final String filepath="obj.ser";
-	
 
 	public static void main(String args[]) throws IOException, SQLException {
 		ArrayList <City> cities = new ArrayList<City>();
@@ -82,6 +86,7 @@ public class App extends JFrame implements Serializable {
 		
 		makeJDBCConnection();
 		ReadData(cities);
+		
 		//print_cities(cities);
 		
 
@@ -90,7 +95,7 @@ public class App extends JFrame implements Serializable {
 		
 		
 		//Traveller(museums, cafes, weather, lat,  lon, name, age, currLatLon, plTravelers)
-		String cityName="Rome"; int museums=0, cafes=0; String waether=null; double lat=7138.44789, lon=7138.44789; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
+		String cityName="Athens"; int museums=0, cafes=0; String waether=null; double lat=7138.44789, lon=7138.44789; String name=null; int age=0; double currlatlon=0.0; int pltravelers=0;
 		Business business = new Business(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
 		Tourist tourist = new Tourist(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
 		Traveller traveller2 = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);		
@@ -117,7 +122,7 @@ public class App extends JFrame implements Serializable {
 				break;
 			case 1:  //simple traveller
 				int i = 0;
-				String[] buttons = { "Create Traveller", "Similarity", "Compaire cities", "print traveller", "free ticket", "back"};    
+				String[] buttons = { "Create Traveller", "Similarity", "Compaire cities", "print traveller", "free ticket","similarity travellers", "back"};    
 				int returnValue = JOptionPane.showOptionDialog(null, "Traveller", "Narrative",
 				        JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[i]);
 				int tmpchoice = returnValue;
@@ -165,7 +170,9 @@ public class App extends JFrame implements Serializable {
 					}
 					break;
 				case 1://similarity
+					name = JOptionPane.showInputDialog(null, "give name:");
 					Traveller taksidiotisSim = search_travellers(travellers, name);
+					System.out.println(name);
 					String[] buttonssim = { "wanna choose from a list", "wanna type your own"};
 					int var = JOptionPane.showOptionDialog(null, "similarity", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttonssim, buttonssim[i]);
 					switch(var) {
@@ -177,18 +184,19 @@ public class App extends JFrame implements Serializable {
 						for(int arr=0; arr<cities.size(); arr++) {
 							bottons[arr] = cities.get(arr).getCityName();
 						}
-						int temp = JOptionPane.showOptionDialog(null, "choose the city you want based on the number", "similarity",JOptionPane.WARNING_MESSAGE, 0, null, bottons, bottons[i]);
+						int temp = JOptionPane.showOptionDialog(null, "chose the city you want based on the number", "similarity",JOptionPane.WARNING_MESSAGE, 0, null, bottons, bottons[i]);
 						k = temp;
 						String city = cities.get(k).getCityName();
 						canditateCity.setCityName(city);
 						break;
 					case 1:
 						String cityname = JOptionPane.showInputDialog(null, "give city name:");
-						search_cities(cities, cityname);
+						//search_cities(cities, cityname);
 						canditateCity.setCityName(cityname);
 
 					}
 					City poliSim = search_cities(cities, canditateCity.cityName);
+					System.out.println(poliSim);
 					taksidiotisSim.Similarity(poliSim);
 					System.out.println("the answer of similarity is : " + taksidiotisSim.Similarity(poliSim) + "\n");
 					break;
@@ -201,7 +209,7 @@ public class App extends JFrame implements Serializable {
 					Traveller taksidiotisCmp = search_travellers(travellers, name2);
 					int countertf =0;
 					Boolean[] buttonstf = {true, false};
-					int  value= JOptionPane.showOptionDialog(null, "choose city:", "business",JOptionPane.WARNING_MESSAGE, 0, null, buttonstf, buttonstf[countertf]);;
+					int  value= JOptionPane.showOptionDialog(null, "do you like rain?", "business",JOptionPane.WARNING_MESSAGE, 0, null, buttonstf, buttonstf[countertf]);;
 					if (value == 0) {
 						tmp=true;
 					}
@@ -214,7 +222,21 @@ public class App extends JFrame implements Serializable {
 				case 4: //free ticket
 					freeTicket(travellers, cities);
 					break;
-				case 5:
+				case 5: //similarity travellers
+					print_travellers(travellers);
+					System.out.println("choose traveller: ");
+					int k=0;
+					String[] bottons = new String[travellers.size()];
+					for(int arr=0; arr<travellers.size(); arr++) {
+						bottons[arr] = travellers.get(arr).getName();
+					}
+					int temp = JOptionPane.showOptionDialog(null, "chose the traveller you want based on the number", "similarity",JOptionPane.WARNING_MESSAGE, 0, null, bottons, bottons[i]);
+					k = temp;
+					String city = travellers.get(k).getName();
+					traveller = search_travellers(travellers, city);
+					similarityTraveller(travellers, cities, traveller);
+					break;
+				case 6:
 					run =1;
 					break;
 				}
@@ -288,32 +310,42 @@ public class App extends JFrame implements Serializable {
 	 public static void RetrieveData(String city, String country, String appid,ArrayList<City> cities) throws  IOException {
 		 City tmpcity = new City("athens", 40, 100, "rain", 103.321, 334.321);
 		 tmpcity.setCityName(city);
-		 
-		 
 		 ObjectMapper mapper = new ObjectMapper();
-		 OpenWeatherMap weather_obj = mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+""), OpenWeatherMap.class);
+		 int museums = 0,cafes = 0;
 		 
-		 System.out.println(city+" temperature: " + (weather_obj.getMain()).getTemp());
+		 new loadingscreen();
 		 
-		 System.out.println(city+" lat: " + weather_obj.getCoord().getLat()+" lon: " + weather_obj.getCoord().getLon());
+		 /////////weather
+		 OpenWeatherMap weather_obj = new OpenWeatherMap();//mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+""), OpenWeatherMap.class);
+		 //OpenWeatherMap weather_obj1 = mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+""), OpenWeatherMap.class);
+		 weather_thread weatherthread = new weather_thread(city, country, appid, weather_obj);
+		 Thread thread_weather = new Thread(weatherthread);
+		 thread_weather.start();
+		 try {
+			TimeUnit.SECONDS.sleep(10);
+			System.out.println(thread_weather.getState());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		 tmpcity.setWeather(weather_thread.getWeather_obj().getWeather().get(0).getMain());
+		 tmpcity.setLat(weather_thread.getWeather_obj().getCoord().getLat());
+		 tmpcity.setLon(weather_thread.getWeather_obj().getCoord().getLon());
 		 
-		 tmpcity.setWeather(weather_obj.getWeather().get(0).getMain());
-		 //weather_obj.getWeather.get(0).getMain
-		 
-		 tmpcity.setLat(weather_obj.getCoord().getLat());
-		 tmpcity.setLon(weather_obj.getCoord().getLon());
-		 
-		 MediaWiki mediaWiki_obj =  mapper.readValue(new URL("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2"),MediaWiki.class);
-		 
-		 //System.out.println(city+" Wikipedia article: "+mediaWiki_obj.getQuery().getPages().get(0).getExtract());
-		 
-		 tmpcity.setMuseums(countOccurences(mediaWiki_obj.getQuery().getPages().get(0).getExtract(),"museums"));
-		 
-		 tmpcity.setCafes(countOccurences(mediaWiki_obj.getQuery().getPages().get(0).getExtract(),"Cafes"));
+		 /////////////wiki
+		 MediaWiki mediaWiki_obj =  new MediaWiki();//mapper.readValue(new URL("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles="+city+"&format=json&formatversion=2"),MediaWiki.class);
+		 wiki_thread wikithread = new wiki_thread(city, museums, cafes, mediaWiki_obj);
+		 Thread thread_wiki = new Thread(wikithread);
+		 thread_wiki.start();
+		 try {
+			TimeUnit.SECONDS.sleep(10);
+		 } catch (InterruptedException e) {
+			e.printStackTrace();
+		 }
+		 tmpcity.setMuseums(wiki_thread.getMuseums());
+		 tmpcity.setCafes(wiki_thread.getCafes());
 		 
 		 System.out.println("musiums" + tmpcity.getMuseums());
 		 System.out.println("cafes" + tmpcity.getCafes());
-		// System.out.println(obj.getMain());
 		 
 		 cities.add(tmpcity);
 		 addDataToDB(tmpcity);
@@ -425,7 +457,7 @@ public class App extends JFrame implements Serializable {
 	
 	
 	
-	public static void freeTicket(ArrayList<Traveller> travellers, ArrayList<City> cities) {
+	public static void freeTicket(ArrayList<Traveller> travellers, ArrayList<City> cities) throws IOException {
 		System.out.println("choose city:\n");
 		print_cities(cities);
 		
@@ -441,10 +473,11 @@ public class App extends JFrame implements Serializable {
 				k = i;
 				maxSimilarity = travellers.get(i).Similarity(tmp);
 				JOptionPane.showMessageDialog(null, maxSimilarity);
-				System.out.println(maxSimilarity);
+				//System.out.println(maxSimilarity);
+				travellers.get(i).setCityName(tmp.getCityName());
 			}
 		}
-		JOptionPane.showMessageDialog(null, travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName());
+		JOptionPane.showMessageDialog(null, travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName() );
 		System.out.println(travellers.get(k).getName() + " you have a free ticket for " + travellers.get(k).getCityName());
 	}
 	
@@ -491,13 +524,19 @@ public class App extends JFrame implements Serializable {
 	
 	
 	
-	public static City search_cities(ArrayList<City> cities, String cityName) {
+	public static City search_cities(ArrayList<City> cities, String cityName) throws IOException {
 		Scanner sc = new Scanner(System.in);
-		City tmp = null;
+		City tmp = new City(cityName, 1, 0, null, 0, 0);
 		int nigga = 0;
 		for (int i=0; i<cities.size(); i++) {
 			if (cityName.equals(cities.get(i).getCityName())) {
-				tmp = cities.get(i);
+				//tmp = cities.get(i);
+				tmp.setCityName(cities.get(i).getCityName());
+				tmp.setMuseums(cities.get(i).getMuseums());
+				tmp.setCafes(cities.get(i).getCafes());
+				tmp.setWeather(cities.get(i).getWeather());
+				tmp.setLat(cities.get(i).getLat());
+				tmp.setLon(cities.get(i).getLon());
 				nigga=1;
 				System.out.println("city found");
 				int j=0;
@@ -508,6 +547,7 @@ public class App extends JFrame implements Serializable {
 				int noumero = returnValue;//sc.nextInt();
 				switch(noumero) {
 				case 0:
+					System.out.println("mpike");
 					System.out.println(tmp.getCityName());
 					return tmp;
 				case 1:
@@ -518,7 +558,7 @@ public class App extends JFrame implements Serializable {
 				break;
 			}//else {
 		}
-				if (nigga == 0) {
+			/*	if (nigga == 0) {
 					int i = 0;
 					String[] buttons = { "Do nothing", "Create a city"};    
 					int returnValue = JOptionPane.showOptionDialog(null, "Narrative", "Narrative",
@@ -540,9 +580,8 @@ public class App extends JFrame implements Serializable {
 					default:
 						System.out.println("wrong option");
 					}
-				}
-				
-				
+				}*/
+		tmp=null;		
 		return tmp;
 	}
 	
@@ -555,15 +594,12 @@ public class App extends JFrame implements Serializable {
 	
 	public static Traveller search_travellers(ArrayList<Traveller> traveller, String name) {
 		Traveller tmp = null;
-		
 		for (int i=0; i<traveller.size(); i++) {
-			
 			if (traveller.get(i).getName().equals(name)) {
-				
 				tmp = traveller.get(i);
+				return tmp;
 			}
 		}
-		
 		return tmp;
 	}
 	
@@ -623,7 +659,7 @@ public class App extends JFrame implements Serializable {
 	
 	
 	
-	public static boolean equals(ArrayList<City> cities, String cityName) {
+	public static boolean equals(ArrayList<City> cities, String cityName) throws IOException {
 		if (search_cities(cities, cityName) == null) {
 			return true;
 		}else {
@@ -709,7 +745,46 @@ public class App extends JFrame implements Serializable {
             //return null;
         }
     }
-	
+    
+    public static City similarityTraveller(ArrayList<Traveller> travellers, ArrayList<City> cities, Traveller traveller) throws IOException {
+    	int tmpsimilarity, maxsimilarty = 0;
+    	City city = new City("", 0, 0, "", 0, 0);
+    	Stream<Traveller> stream = travellers.stream();
+		Map <String,Integer> cityToRank=stream.collect(Collectors.toMap(i->i.getCityName(),i->innerDot(i,traveller), (address1, address2) -> address1
+	            //System.out.println("duplicate key found!");
+	        ));
+		
+		//cityToRank.forEach((k,v)->System.out.println("city:"+k+" rank: "+v));
+		//System.out.println("The Recommended City:"+cityToRank);	
+		Optional<RecommendedCity> recommendedCity=
+				travellers.stream().map(i-> new RecommendedCity(i.getCityName(),innerDot(i,traveller))).max(Comparator.comparingInt(RecommendedCity::getRank));
+		//search_cities(cities, recommendedCity.toString());
+		System.out.println("The Recommended City:"+recommendedCity.get().getCity());
+		JOptionPane.showMessageDialog(null, "The Recommended City" +recommendedCity.get().getCity() );
+
+		return search_cities(cities, recommendedCity.get().getCity());
+    }
+    
+	private static int innerDot(Traveller currTraveller, Traveller candTraveller) {
+		int sum=0;
+		int[] currentTraveller = {1,2}, candidateTraveller = {1,2};
+		currentTraveller[0] = currTraveller.getMuseums();
+		currentTraveller[1] = currTraveller.getCafes();
+		candidateTraveller[0] = candTraveller.getMuseums();
+		candidateTraveller[1] = candTraveller.getCafes();
+		
+		for (int i=0; i<currentTraveller.length;i++)
+			sum+=currentTraveller[i]*candidateTraveller[i];
+		
+		//if (currTraveller.getWeather().equals(candTraveller.getWeather())) {
+			sum++;
+		//}
+		//System.out.println(sum);
+		//System.out.println("cityName:" + currTraveller.getCityName());
+
+		return sum;
+			
+	}
 
 	
 }

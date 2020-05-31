@@ -57,7 +57,6 @@ public class Traveller extends City implements Comparable<Traveller>, Serializab
 	
 	public double Similarity(City city) {
 		int counter = 0;
-				
 		if (city.museums != 0 && museums == 1) {
 			counter++;
 		}
@@ -70,7 +69,6 @@ public class Traveller extends City implements Comparable<Traveller>, Serializab
 		if (city.weather != "rain" && weather != "rain") {
 			counter++;
 		}
-		
 		double percentage = counter*100/3;
 		
 		return percentage;
