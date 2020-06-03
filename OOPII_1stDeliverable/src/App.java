@@ -156,7 +156,7 @@ public class App extends JFrame implements Serializable {
 					}
 						
 					String[] buttons3 = { "yes", "no"};
-					int answeather = JOptionPane.showOptionDialog(null, "do you like cafes?", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttons3, buttons3[i]);
+					int answeather = JOptionPane.showOptionDialog(null, "do you like rain?", "Narrative",JOptionPane.WARNING_MESSAGE, 0, null, buttons3, buttons3[i]);
 					if (answeather == 0) {
 						traveller.setWeather("rain");
 					}
@@ -199,6 +199,8 @@ public class App extends JFrame implements Serializable {
 					System.out.println(poliSim);
 					taksidiotisSim.Similarity(poliSim);
 					System.out.println("the answer of similarity is : " + taksidiotisSim.Similarity(poliSim) + "\n");
+					JOptionPane.showMessageDialog(null, "the answer of similarity is : "+ taksidiotisSim.Similarity(poliSim));
+
 					break;
 				case 2://Compare cities
 					Scanner bool = new Scanner (System.in);
@@ -312,8 +314,6 @@ public class App extends JFrame implements Serializable {
 		 tmpcity.setCityName(city);
 		 ObjectMapper mapper = new ObjectMapper();
 		 int museums = 0,cafes = 0;
-		 
-		 new loadingscreen();
 		 
 		 /////////weather
 		 OpenWeatherMap weather_obj = new OpenWeatherMap();//mapper.readValue(new URL("http://api.openweathermap.org/data/2.5/weather?q="+city+","+country+"&APPID="+appid+""), OpenWeatherMap.class);
@@ -493,7 +493,7 @@ public class App extends JFrame implements Serializable {
 					"\tcafes: " + cities.get(i).getCafes() + "\tweather: " + cities.get(i).getWeather() + "\tLatitude: " +
 					cities.get(i).getLat() +"\tLonitude " + cities.get(i).getLon());
 		}
-		String[] bottons = new String[cities.size()];
+		String[] bottons = new String[10];
 		int arr=0;
 		for(int i=0; i<cities.size(); i++) {
 			bottons[arr] = cities.get(i).getCityName();
