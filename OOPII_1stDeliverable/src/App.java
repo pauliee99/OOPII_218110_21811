@@ -27,8 +27,7 @@ import javax.swing.JPanel;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
-
+//import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;s
 import weather.OpenWeatherMap;
 import wikipedia.MediaWiki;
 
@@ -49,6 +48,7 @@ import java.io.FileWriter;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.Writer;
+/*
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -64,7 +64,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
+*/
 
 /**
  * This is main class
@@ -75,12 +75,13 @@ import javax.swing.JPanel;
 public class App extends JFrame implements Serializable {
 	
 	private static final String filepath="obj.ser";
+	private static final String filepath2="obj2.ser";
 
 	public static void main(String args[]) throws IOException, SQLException {
 		ArrayList <City> cities = new ArrayList<City>();
-		Scanner string = new Scanner(System.in);
-		Scanner integer = new Scanner(System.in);
-		File file = new File("filename.txt");
+		//Scanner string = new Scanner(System.in);
+		//Scanner integer = new Scanner(System.in);
+		//File file = new File("filename.txt");
 		String line;
 		String appid ="e9e0d5d96bd08a8c6d75d8b02a24b974";
 		
@@ -100,16 +101,27 @@ public class App extends JFrame implements Serializable {
 		Tourist tourist = new Tourist(museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);
 		Traveller traveller2 = new Traveller(cityName, museums, cafes, waether, lat, lon, name, age, currlatlon, pltravelers);		
 		
+		ArrayList <String> travellersnames = new ArrayList<String>();
+		ArrayList <VisitorsOfCity> visitors = new ArrayList<VisitorsOfCity>();
 		ArrayList<Traveller> travellers = new ArrayList<>();
 		App objectIO = new App();
 		objectIO.ReadObjectFromFile(filepath, travellers);
 		
 		print_travellers(travellers);
 		
+		objectIO.ReadObjectFromFileVisitors(filepath2,  visitors);
+		 print_visitors(visitors);
+		 //int v=0;
+		 //System.out.println(visitors.get(v).counttravellers());
+		 if(visitors.isEmpty()){
+		 VisitorsOfCity dummyvisitor = new VisitorsOfCity("athens",0,0,null,0,0 ,travellersnames);
+			visitors.add(dummyvisitor);
+		 }
 		
+		 JOptionPane.showMessageDialog(null, "Visitors are created through compare cities in order for the city to be recommended!");
 		while (true) {
 			int mm = 0;
-			String[] mainMenubuttons = { "create city", "Traveller", "buisiness Traveller", "tourist Traveller", "Print Cities", "Show travellers", "Quit" };    
+			String[] mainMenubuttons = { "create city", "Traveller", "buisiness Traveller", "tourist Traveller", "Print Cities", "Show travellers", "Visitors of city", "Quit" };    
 			int mainMenu = JOptionPane.showOptionDialog(null, "Main Menu", "Narrative",
 			        JOptionPane.WARNING_MESSAGE, 0, null, mainMenubuttons, mainMenubuttons[mm]);
 			System.out.println(mainMenu);
@@ -122,7 +134,7 @@ public class App extends JFrame implements Serializable {
 				break;
 			case 1:  //simple traveller
 				int i = 0;
-				String[] buttons = { "Create Traveller", "Similarity", "Compaire cities", "print traveller", "free ticket","similarity travellers", "back"};    
+				String[] buttons = { "Create Traveller", "Similarity", "Compaire cities", "print traveller", "free ticket","similarity travellers","visitors", "back"};    
 				int returnValue = JOptionPane.showOptionDialog(null, "Traveller", "Narrative",
 				        JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[i]);
 				int tmpchoice = returnValue;
@@ -203,19 +215,40 @@ public class App extends JFrame implements Serializable {
 
 					break;
 				case 2://Compare cities
-					Scanner bool = new Scanner (System.in);
+					int p=0;
+					
 					boolean tmp = false;
 					String name2 = null;
 					print_travellers(travellers);
 					name2 = JOptionPane.showInputDialog(null, "write the name of the traveller");
 					Traveller taksidiotisCmp = search_travellers(travellers, name2);
-					int countertf =0;
-					Boolean[] buttonstf = {true, false};
-					int  value= JOptionPane.showOptionDialog(null, "do you like rain?", "business",JOptionPane.WARNING_MESSAGE, 0, null, buttonstf, buttonstf[countertf]);;
-					if (value == 0) {
-						tmp=true;
+					
+					
+					//taksidiotisCmp.CompareCities(tmp, cities);
+					City maxcity=taksidiotisCmp.CompareCities(tmp, cities);
+					for (int o = 0; o < visitors.size(); o ++)
+						//System.out.println("here");
+					if(visitors.get(o).getCityName().equals(maxcity.getCityName())){
+						System.out.println("here1");
+						visitors.get(o).setTravellername(taksidiotisCmp.getName());
+						p=1;
 					}
-					taksidiotisCmp.CompareCities(tmp, cities);
+					if( p==1){
+						System.out.println("added to to city that exists");
+						print_visitors(visitors);
+						WriteObjectToFileVisitors(filepath2,visitors);
+						break;
+					}
+					
+						//System.out.println("here2");
+					ArrayList <String> travellersnames2 = new ArrayList<String>();
+					VisitorsOfCity visitor = new VisitorsOfCity(maxcity.getCityName(),0,0,null,0,0,travellersnames2);
+					visitor.setTravellername(name2);
+					visitors.add(visitor);
+					
+					System.out.println("here3");
+					print_visitors(visitors);
+					WriteObjectToFileVisitors(filepath2,visitors);
 					break;
 				case 3://print traveller
 					JOptionPane.showMessageDialog(null, "name: " + name + "\nage: " + age + "\ncurrent location: " + currlatlon);
@@ -239,6 +272,11 @@ public class App extends JFrame implements Serializable {
 					similarityTraveller(travellers, cities, traveller);
 					break;
 				case 6:
+					for(int c=0;c<visitors.size();c++){
+						System.out.println("City "+visitors.get(i).getCityName()+"Number of visitors: "+visitors.get(c).counttravellers());
+						}
+						break;
+				case 7:
 					run =1;
 					break;
 				}
@@ -284,7 +322,10 @@ public class App extends JFrame implements Serializable {
 		        	JOptionPane.showMessageDialog(null,traveller3.getName() + " " + traveller3.getAge());
 		        }
 		        break;
-			case 6:
+			case 6://visitors of city
+				print_visitors(visitors);
+				break;
+			case 7:
 				System.exit(0);
 				break;
 			default: 
@@ -784,6 +825,75 @@ public class App extends JFrame implements Serializable {
 
 		return sum;
 			
+	}
+	
+	
+	
+	public void ReadObjectFromFileVisitors(String filepath2, ArrayList<VisitorsOfCity> visitors) {
+		 
+	    try {
+	    	
+	    	
+	        FileInputStream fileIn = new FileInputStream(filepath2);
+	        ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+	        //Object obj = objectIn.readObject();
+	        
+	        // create a reader instance
+	        BufferedReader br = new BufferedReader(new FileReader(filepath2));
+
+	        // read until end of file
+	        String line;
+	        boolean cont = true;
+	        //while ((line = br.readLine()) != null) {
+	        while(cont) {
+	        	//System.out.println(line);
+	        	VisitorsOfCity tmp = new VisitorsOfCity(null, 0, 0, null, 0, 0, null);
+	        	Object obj = objectIn.readObject();
+	            //System.out.println(line);
+	            tmp = (VisitorsOfCity) obj;
+	            if ( obj != null) {
+	            	visitors.add(tmp);
+	            }else {
+	            	cont =false;
+	            }
+	            
+	        }
+
+	        // close the reader
+	        br.close();
+	        
+	        System.out.println("The Object has been read from the file");
+	        objectIn.close();
+	        //return obj;
+
+	    } catch (Exception ex) {
+	        
+	    	//ex.printStackTrace();
+	        //return null;
+	    }
+	}
+	public static void WriteObjectToFileVisitors(String filepath2,ArrayList<VisitorsOfCity> visitors) {
+		 
+	    try {
+	    	int i=0;
+	        FileOutputStream fileOut = new FileOutputStream(filepath2);
+	        ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+	        for (VisitorsOfCity m : visitors) {
+	        	objectOut.writeObject(visitors.get(i));
+	        	i++;
+	        }
+	        objectOut.close();
+	        System.out.println("The Object  was succesfully written to a file");
+
+	    } catch (Exception ex) {
+	        //ex.printStackTrace();
+	    }
+	}
+	public static void print_visitors(ArrayList<VisitorsOfCity> visitors) {
+		for (int i=0; i<visitors.size(); i++) {
+			System.out.println("City name: " + visitors.get(i).getCityName() + "\tVisitor names:" + visitors.get(i).getTravellersnames());
+		}
 	}
 
 	
