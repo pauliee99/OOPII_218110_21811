@@ -83,7 +83,7 @@ public class App extends JFrame implements Serializable {
 		//Scanner integer = new Scanner(System.in);
 		//File file = new File("filename.txt");
 		String line;
-		String appid ="e9e0d5d96bd08a8c6d75d8b02a24b974";
+		String appid =${{ secrets.OPENWEATHERMAP }};
 		
 		makeJDBCConnection();
 		ReadData(cities);
