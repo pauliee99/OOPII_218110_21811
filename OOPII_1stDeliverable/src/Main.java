@@ -59,7 +59,7 @@ public class Main {
 		Scanner string = new Scanner(System.in);
 		Scanner integer = new Scanner(System.in);
 		
-		String appid ="e9e0d5d96bd08a8c6d75d8b02a24b974";
+		String appid =${{ secrets.OPENWEATHERMAP }};
 		RetrieveData("Rome","it",appid);
 		
 //		// City(museums, cafes, weather, lat, lot)
